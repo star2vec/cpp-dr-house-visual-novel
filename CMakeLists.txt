@@ -127,15 +127,26 @@ FetchContent_MakeAvailable(googletest)
 
 # find_package(Threads REQUIRED)
 
+# 1. WE FIND OPENSSL FIRST
+find_package(OpenSSL REQUIRED)
+
+
 ###############################################################################
 
-# NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${MAIN_EXECUTABLE_NAME} main.cpp ${SOURCES})
+# 2. WE BUILD THE EXECUTABLE (The template's ${SOURCES} already contains all your .cpp files!)
+add_executable(${MAIN_EXECUTABLE_NAME} main.cpp ${SOURCES}
+        include/MedicalAction.h)
+
+# 3. WE LINK OPENSSL TO THE EXECUTABLE (Must happen AFTER add_executable)
+target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+
+if(APPLE)
+    target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE "-framework CoreFoundation" "-framework Security")
+endif()
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true
-set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
-# set_compiler_flags(TARGET_NAMES ${MAIN_EXECUTABLE_NAME} ${FOO} ${BAR})
+set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})# set_compiler_flags(TARGET_NAMES ${MAIN_EXECUTABLE_NAME} ${FOO} ${BAR})
 # where ${FOO} and ${BAR} represent additional executables or libraries
 # you want to compile with the set compiler flags
 
@@ -174,6 +185,6 @@ endif()
 #
 #include(GoogleTest)
 #gtest_discover_tests(test_oop)
-copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+copy_files(FILES tastatura.txt secrets.json COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})

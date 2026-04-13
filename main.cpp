@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <array>
 
@@ -44,5 +45,72 @@ int main() {
     /// std::ifstream fis("date.txt");
     /// for(int i = 0; i < nr2; ++i)
     ///     fis >> v2[i];
+    return 0;
+}
+*/
+#include "GameEngine.h"
+#include "TerminalUI.h"
+#include "LLM.h"
+#include <iostream>
+
+int main() {
+    LLM aiBrain;
+
+    TerminalUI::clearScreen();
+    std::cout << "=======================================\n";
+    std::cout << "   DR. HOUSE : THE VISUAL NOVEL        \n";
+    std::cout << "=======================================\n\n";
+    std::cout << "Cameron is preparing patient files... (Please wait)\n";
+
+    // 1. Generam cei 3 pacienti
+    std::vector<PatientProfile> profiles = aiBrain.generatePatientFiles(3);
+
+    // 2. Meniul tip CARUSEL
+    int selected = 0;
+    bool chosen = false;
+
+    while(!chosen) {
+        TerminalUI::clearScreen();
+        std::cout << "=== SELECT A PATIENT FILE (UP/DOWN to browse, ENTER to select) ===\n\n";
+
+        std::cout << "   [ FILE " << (selected + 1) << " OF " << profiles.size() << " ]\n";
+        std::cout << "--------------------------------------\n";
+        std::cout << " Name:     \033[1;36m" << profiles[selected].name << "\033[0m\n";
+        std::cout << " Health:   " << profiles[selected].health << "/100\n";
+        std::cout << " Symptom:  \033[1;31m" << profiles[selected].symptom << "\033[0m\n";
+        std::cout << "--------------------------------------\n";
+        std::cout << " Notes: " << profiles[selected].story << "\n";
+        std::cout << "--------------------------------------\n\n";
+
+        std::cout << "(Use UP/DOWN arrows to flip folders, ENTER to take the case)";
+
+        // Folosim 1 (UP) si 2 (DOWN) din sistemul tau curent, pentru siguranta
+        int key = TerminalUI::getKeyPress();
+        if (key == 1) { // UP
+            selected--;
+            if (selected < 0) selected = profiles.size() - 1;
+        } else if (key == 2) { // DOWN
+            selected++;
+            if (selected >= (int)profiles.size()) selected = 0;
+        } else if (key == 3) { // ENTER
+            chosen = true;
+        }
+    }
+
+    // 3. Cream pacientul C++ pe baza alegerii
+    Patient chosenPatient(profiles[selected].name, profiles[selected].health, profiles[selected].symptom);
+
+    // 4. Pornim motorul de joc!
+    GameEngine engine(chosenPatient);
+
+    // (Opcional, dar util): Putem printa povestea chiar inainte de start
+    TerminalUI::clearScreen();
+    std::cout << "You took the file. Cuddy hands you a marker.\n\n";
+    std::cout << "\033[1;33m" << profiles[selected].story << "\033[0m\n\n";
+    std::cout << "(Press ENTER to enter the room...)";
+    while(TerminalUI::getKeyPress() != 3);
+
+    engine.run();
+
     return 0;
 }
