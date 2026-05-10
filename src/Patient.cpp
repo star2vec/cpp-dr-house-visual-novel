@@ -1,10 +1,27 @@
 #include "Patient.h"
 
 // Constructor de initializare (Default)
-Patient::Patient() : name("Unknown"), health(100), diagnosticCurent(new std::string("Nediagnosticat")), diagnosticClarity(0), malpracticeRisk(0) {}
+Patient::Patient()
+    : name("Unknown"), health(100),
+      diagnosticCurent(new std::string("Undiagnosed")),
+      diagnosticClarity(0), malpracticeRisk(0),
+      hiddenDiagnosis("Unknown"), diseaseSeverity(1) {}
 
-// Constructor supraincarcat
-Patient::Patient(std::string n, int h, std::string diag) : name(n), health(h), diagnosticCurent(new std::string(diag)), diagnosticClarity(0), malpracticeRisk(0) {}
+// Constructor supraincarcat (3 params — backward-compatible)
+Patient::Patient(std::string n, int h, std::string symptom)
+    : name(n), health(h),
+      diagnosticCurent(new std::string(symptom)),
+      diagnosticClarity(0), malpracticeRisk(0),
+      hiddenDiagnosis("Unknown"), diseaseSeverity(1) {}
+
+// Constructor complet (cu hiddenDiagnosis si severity)
+Patient::Patient(std::string n, int h, std::string symptom,
+                 std::string hiddenDiag, int severity)
+    : name(n), health(h),
+      diagnosticCurent(new std::string(symptom)),
+      diagnosticClarity(0), malpracticeRisk(0),
+      hiddenDiagnosis(std::move(hiddenDiag)),
+      diseaseSeverity(severity) {}
 
 // --- REGULA CELOR 3 ---
 
@@ -14,20 +31,25 @@ Patient::~Patient() {
 }
 
 // 2. Constructorul de Copiere (Facem Deep Copy)
-Patient::Patient(const Patient& other) : name(other.name), health(other.health), diagnosticClarity(other.diagnosticClarity), malpracticeRisk(other.malpracticeRisk) {
+Patient::Patient(const Patient& other)
+    : name(other.name), health(other.health),
+      diagnosticClarity(other.diagnosticClarity),
+      malpracticeRisk(other.malpracticeRisk),
+      hiddenDiagnosis(other.hiddenDiagnosis),
+      diseaseSeverity(other.diseaseSeverity) {
     this->diagnosticCurent = new std::string(*(other.diagnosticCurent));
 }
 
 // 3. Operatorul = (Atribuire)
 Patient& Patient::operator=(const Patient& other) {
-    if (this == &other) {
-        return *this;
-    }
+    if (this == &other) return *this;
 
     this->name = other.name;
     this->health = other.health;
-    this->diagnosticClarity = other.diagnosticClarity; // Copiem noile staturi
-    this->malpracticeRisk = other.malpracticeRisk;     // Copiem noile staturi
+    this->diagnosticClarity = other.diagnosticClarity;
+    this->malpracticeRisk = other.malpracticeRisk;
+    this->hiddenDiagnosis = other.hiddenDiagnosis;
+    this->diseaseSeverity = other.diseaseSeverity;
 
     delete this->diagnosticCurent;
     this->diagnosticCurent = new std::string(*(other.diagnosticCurent));
@@ -74,6 +96,8 @@ std::string Patient::getName() const { return name; }
 std::string Patient::getSymptom() const { return *diagnosticCurent; }
 int Patient::getClarity() const { return diagnosticClarity; }
 int Patient::getMalpractice() const { return malpracticeRisk; }
+const std::string& Patient::getHiddenDiagnosis() const { return hiddenDiagnosis; }
+int Patient::getDiseaseSeverity() const { return diseaseSeverity; }
 
 // Modificatori (Cu "Clamping" - impiedicam valorile sa iasa din [0, 100])
 void Patient::modifyHealth(int amount) {

@@ -135,7 +135,8 @@ find_package(OpenSSL REQUIRED)
 
 # 2. WE BUILD THE EXECUTABLE (The template's ${SOURCES} already contains all your .cpp files!)
 add_executable(${MAIN_EXECUTABLE_NAME} main.cpp ${SOURCES}
-        include/MedicalAction.h)
+        include/MedicalAction.h
+        include/example.h)
 
 # 3. WE LINK OPENSSL TO THE EXECUTABLE (Must happen AFTER add_executable)
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)

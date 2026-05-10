@@ -196,7 +196,7 @@ PatientBackstory LLM::generateAdmissionStory(const std::string& name, int health
     return backstory;
 }
 
-MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom) {
+MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis) {
     MedicalOutcome outcome;
 
     std::string apiKey = "";
@@ -209,14 +209,18 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
     std::string systemPrompt =
         "You are a Game Master for a medical simulator. You MUST return strictly a JSON object with EXACTLY these keys: "
         "'narrative' (string), 'health_change' (integer, can be negative), 'clarity_change' (integer), 'malpractice_change' (integer). "
-        "Do NOT wrap the JSON in markdown blocks. Output absolutely NOTHING else.";
+        "Do NOT wrap the JSON in markdown blocks. Output absolutely NOTHING else.\n"
+        "[GAME MASTER SECRET — NOT SHOWN TO PLAYER]: The patient's true diagnosis is: " + hiddenDiagnosis + ". "
+        "Use this to judge whether the action is medically appropriate. "
+        "Wrong treatments should cause health_change to be very negative and malpractice_change to be high.";
 
     std::string userPrompt =
-        "Patient symptom: " + symptom + ". Health: " + std::to_string(currentHealth) + "/100. Diagnostic Clarity: " + std::to_string(currentClarity) + "%.\n"
+        "Patient visible symptom: " + symptom + ". Health: " + std::to_string(currentHealth) + "/100. Diagnostic Clarity: " + std::to_string(currentClarity) + "%.\n"
         "Dr. House orders a " + actionType + ": " + actionName + ".\n"
-        "Determine what happens. If it's a Lab Test, clarity goes up but health might drop slightly from the procedure. "
-        "If it's a Treatment and clarity is low, it might be the WRONG treatment causing a massive health drop and high malpractice risk. "
-        "Write a 2-sentence cynical narrative of the result.";
+        "Evaluate this against the true (hidden) diagnosis. "
+        "If it's a Lab Test, clarity goes up based on how relevant the test is to the real diagnosis. "
+        "If it's a Treatment: if correct for the hidden diagnosis, it helps; if wrong, it causes significant harm and malpractice risk. "
+        "Write a 2-sentence cynical House M.D. style narrative of the result.";
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
@@ -282,8 +286,13 @@ std::vector<PatientProfile> LLM::generatePatientFiles(int count) {
     std::string userPrompt =
         "Generate " + std::to_string(count) + " unique, bizarre medical cases for Dr. House. "
         "Each object in the array MUST have EXACTLY these keys: "
-        "'name' (string), 'health' (integer between 30 and 80), 'symptom' (string, a weird symptom), "
-        "'story' (string, a 2-sentence cynical backstory).";
+        "'name' (string), "
+        "'health' (integer between 30 and 80), "
+        "'symptom' (string — describe 2-3 vague, confusing symptoms WITHOUT naming the disease), "
+        "'story' (string — 2-sentence cynical backstory, no diagnosis named), "
+        "'hidden_diagnosis' (string — the ONE real disease name, e.g. 'Wilson\\'s Disease'), "
+        "'disease_severity' (integer — 1 for mild, 2 for moderate, 3 for critical/aggressive). "
+        "The 'symptom' and 'story' fields must NOT reveal the hidden_diagnosis. Keep it cryptic.";
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
@@ -325,15 +334,117 @@ std::vector<PatientProfile> LLM::generatePatientFiles(int count) {
                 p.health = item.value("health", 50);
                 p.symptom = item.value("symptom", "Unexplained bleeding");
                 p.story = item.value("story", "Found unconscious.");
+                p.hiddenDiagnosis = item.value("hidden_diagnosis", "Unknown Pathology");
+                p.diseaseSeverity = item.value("disease_severity", 1);
+                if (p.diseaseSeverity < 1) p.diseaseSeverity = 1;
+                if (p.diseaseSeverity > 3) p.diseaseSeverity = 3;
                 profiles.push_back(p);
             }
         } catch (...) {
             // Fallback in caz de eroare grava
-            profiles.push_back({"Error Doe", 50, "API Parsing Failed", "The lab lost the results."});
+            profiles.push_back({"Error Doe", 50, "API Parsing Failed", "The lab lost the results.", "Unknown Pathology", 1});
         }
     } else {
-        profiles.push_back({"Connection Error", 10, "No Wi-Fi", "Cuddy forgot to pay the internet bill."});
+        profiles.push_back({"Connection Error", 10, "No Wi-Fi", "Cuddy forgot to pay the internet bill.", "Unknown Pathology", 1});
     }
 
     return profiles;
+}
+
+std::string LLM::generateHouseClue(const std::string& hiddenDiagnosis,
+                                    const std::string& patientName,
+                                    const std::string& symptom) {
+    std::string apiKey = "";
+    std::ifstream secretFile("secrets.json");
+    if (secretFile.is_open()) {
+        json secrets = json::parse(secretFile);
+        apiKey = secrets.value("ANTHROPIC_API_KEY", "");
+    }
+
+    std::string systemPrompt =
+        "You are a terse crime-scene narrator. House has broken into a patient's home illegally. "
+        "Describe ONE cryptic physical object or environmental detail he notices that subtly hints at "
+        "the diagnosis '" + hiddenDiagnosis + "' WITHOUT naming the disease or any medical term for it. "
+        "Two sentences maximum. Be literary and specific — a pill bottle label, a food item, a smell, a photo.";
+
+    std::string userPrompt =
+        "Patient name: " + patientName + ". Known symptom: " + symptom + ". What does House notice?";
+
+    json requestBody = {
+        {"model", "claude-haiku-4-5-20251001"},
+        {"max_tokens", 150},
+        {"system", systemPrompt},
+        {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
+        {"temperature", 0.9}
+    };
+
+    httplib::Client cli("https://api.anthropic.com");
+    cli.set_connection_timeout(5, 0);
+    cli.set_read_timeout(10, 0);
+    httplib::Headers headers = {
+        {"x-api-key", apiKey},
+        {"anthropic-version", "2023-06-01"},
+        {"Content-Type", "application/json"}
+    };
+
+    auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
+    if (res && res->status == 200) {
+        try {
+            json responseJson = json::parse(res->body);
+            return responseJson["content"][0]["text"].get<std::string>();
+        } catch (...) {
+            return "[Clue generation failed]";
+        }
+    }
+    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+}
+
+std::string LLM::generateTeamOpinion(const std::string& personality, const std::string& agentName,
+                                      const std::string& symptom, const std::string& hiddenDiagnosis,
+                                      int clarity) {
+    std::string apiKey = "";
+    std::ifstream secretFile("secrets.json");
+    if (secretFile.is_open()) {
+        json secrets = json::parse(secretFile);
+        apiKey = secrets.value("ANTHROPIC_API_KEY", "");
+    }
+
+    std::string systemPrompt =
+        personality + "\n"
+        "[GAME MASTER SECRET — NOT SHOWN TO PLAYER]: The patient's true diagnosis is: " + hiddenDiagnosis + ". "
+        "Let this subtly colour your character's instinct — but do NOT name the disease directly. "
+        "Current diagnostic clarity: " + std::to_string(clarity) + "%.";
+
+    std::string userPrompt =
+        "Patient symptom: " + symptom + ". "
+        "Dr. House asks the team for theories. Respond as " + agentName + " in one short paragraph. Stay in character.";
+
+    json requestBody = {
+        {"model", "claude-haiku-4-5-20251001"},
+        {"max_tokens", 200},
+        {"system", systemPrompt},
+        {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
+        {"temperature", 0.8}
+    };
+
+    httplib::Client cli("https://api.anthropic.com");
+    cli.set_connection_timeout(5, 0);
+    cli.set_read_timeout(10, 0);
+    httplib::Headers headers = {
+        {"x-api-key", apiKey},
+        {"anthropic-version", "2023-06-01"},
+        {"Content-Type", "application/json"}
+    };
+
+    auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
+
+    if (res && res->status == 200) {
+        try {
+            json responseJson = json::parse(res->body);
+            return responseJson["content"][0]["text"].get<std::string>();
+        } catch (...) {
+            return "[JSON Parse Error]";
+        }
+    }
+    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
 }

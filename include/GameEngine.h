@@ -3,11 +3,17 @@
 
 #include "Patient.h"
 #include "LLM.h"
+#include "GameLog.h"
 
 class GameEngine {
 private:
     Patient patient;
     LLM aiBrain;
+    int budget = 50000;
+    int vicodinLevel = 0;
+    int turn = 1;
+    GameLog<std::string>     narrativeLog;
+    GameLog<ActionRecord>    actionLog;
 
     void checkEndings();
     

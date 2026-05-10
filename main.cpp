@@ -97,8 +97,14 @@ int main() {
         }
     }
 
-    // 3. Cream pacientul C++ pe baza alegerii
-    Patient chosenPatient(profiles[selected].name, profiles[selected].health, profiles[selected].symptom);
+    // 3. Cream pacientul C++ pe baza alegerii (cu hiddenDiagnosis si severity)
+    Patient chosenPatient(
+        profiles[selected].name,
+        profiles[selected].health,
+        profiles[selected].symptom,
+        profiles[selected].hiddenDiagnosis,
+        profiles[selected].diseaseSeverity
+    );
 
     // 4. Pornim motorul de joc!
     GameEngine engine(chosenPatient);

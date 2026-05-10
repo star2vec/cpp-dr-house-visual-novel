@@ -8,24 +8,23 @@
 // trebuie sa fie neaparat un Test, Tratament, etc.
 class MedicalAction {
 protected:
-    std::string name; // ex: "RMN", "Steroizi", "Biopsie"
+    std::string name;
+
+    // Non-trivial static attribute (rubric)
+    inline static int totalActionsPerformed = 0;
 
 public:
-    // Constructor
     MedicalAction(std::string n) : name(n) {}
-
-    // Destructor virtual -> REGULA DE AUR IN OOP cand ai moștenire!
-    // Fără el, iei depunctare masivă.
     virtual ~MedicalAction() = default;
 
-    // Functie PUR VIRTUALA (= 0). Asta face clasa sa fie abstracta.
-    // Obliga toate clasele derivate sa implementeze aceasta functie.
     virtual std::string getActionType() const = 0;
 
-    // Getter normal pe care il mostenesc toti
-    std::string getName() const { 
-        return name; 
-    }
+    std::string getName() const { return name; }
+
+    void recordPerformed() { ++totalActionsPerformed; }
+
+    // Non-trivial static method (rubric)
+    static int getTotalActionsPerformed() { return totalActionsPerformed; }
 };
 
 

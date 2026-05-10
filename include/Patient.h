@@ -9,15 +9,20 @@ class Patient {
 private:
     std::string name;
     int health;
-    std::string* diagnosticCurent; // Folosit si pe post de simptom la inceput
+    std::string* diagnosticCurent; // Visible symptom shown to player
 
-    // NOILE ATRIBUTE PENTRU GAME MASTER-UL AI
-    int diagnosticClarity; // 0% - 100% (La 100% stim boala)
-    int malpracticeRisk;   // 0% - 100% (La 100% esti dat afara)
+    int diagnosticClarity; // 0-100%
+    int malpracticeRisk;   // 0-100%
+
+    // Hidden diagnosis system — Game Master context, never shown to player
+    std::string hiddenDiagnosis;
+    int diseaseSeverity;   // 1 (mild) / 2 (moderate) / 3 (critical)
 
 public:
     Patient();
-    Patient(std::string n, int h, std::string diag);
+    Patient(std::string n, int h, std::string symptom);
+    Patient(std::string n, int h, std::string symptom,
+            std::string hiddenDiag, int severity);
 
     // --- REGULA CELOR 3 ---
     ~Patient();
@@ -27,9 +32,11 @@ public:
     // Getteri
     int getHealth() const;
     std::string getName() const;
-    std::string getSymptom() const; // Necesara pentru AI prompt
+    std::string getSymptom() const;
     int getClarity() const;
     int getMalpractice() const;
+    const std::string& getHiddenDiagnosis() const;
+    int getDiseaseSeverity() const;
 
     // Modificatori
     void modifyHealth(int amount);

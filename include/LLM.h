@@ -27,7 +27,9 @@ struct PatientProfile {
     std::string name;
     int health;
     std::string symptom;
-    std::string story; // Folosim povestea direct aici, sa nu mai incarcam AI-ul iar!
+    std::string story;
+    std::string hiddenDiagnosis; // True disease — never displayed to player
+    int diseaseSeverity = 1;     // 1 (mild) / 2 (moderate) / 3 (critical)
 };
 
 class LLM {
@@ -40,8 +42,18 @@ public:
 
     // Functiile NOI (Meniul Medical)
     PatientBackstory generateAdmissionStory(const std::string& name, int health, const std::string& symptom);
-    MedicalOutcome evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom);
+    MedicalOutcome evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis);
     std::vector<PatientProfile> generatePatientFiles(int count = 3);
+
+    // Phase 5: Team Brainstorm (AIAgent hierarchy)
+    std::string generateTeamOpinion(const std::string& personality, const std::string& agentName,
+                                    const std::string& symptom, const std::string& hiddenDiagnosis,
+                                    int clarity);
+
+    // Phase 6: Chaos menu — illegal home visit clue
+    std::string generateHouseClue(const std::string& hiddenDiagnosis,
+                                  const std::string& patientName,
+                                  const std::string& symptom);
 };
 
 #endif
