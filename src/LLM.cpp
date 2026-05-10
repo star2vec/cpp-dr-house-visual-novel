@@ -7,6 +7,15 @@
 
 using json = nlohmann::json;
 
+// Trims a prose string to the last complete sentence (ending in . ! or ?).
+// Prevents mid-sentence cutoffs when the model hits max_tokens.
+static std::string trimToLastSentence(const std::string& text) {
+    if (text.empty()) return text;
+    size_t last = text.find_last_of(".!?");
+    if (last == std::string::npos) return text;
+    return text.substr(0, last + 1);
+}
+
 LLM::LLM() {}
 
 std::vector<std::string> LLM::getHouseIntents(const std::string& character) {
@@ -124,8 +133,8 @@ DialogueResponse LLM::generateDialogue(const std::string& character, const std::
 
             json dialogueJson = json::parse(content);
 
-            response.houseLine = dialogueJson.value("house", "[JSON Missing 'house']");
-            response.characterReply = dialogueJson.value("reply", "[JSON Missing 'reply']");
+            response.houseLine = trimToLastSentence(dialogueJson.value("house", "[JSON Missing 'house']"));
+            response.characterReply = trimToLastSentence(dialogueJson.value("reply", "[JSON Missing 'reply']"));
         } catch (const std::exception& e) {
             response.houseLine = "[JSON Parsing Error]";
             response.characterReply = e.what();
@@ -185,7 +194,7 @@ PatientBackstory LLM::generateAdmissionStory(const std::string& name, int health
             json responseJson = json::parse(res->body);
             std::string content = responseJson["content"][0]["text"];
             json storyJson = json::parse(content);
-            backstory.story = storyJson.value("story", "[JSON Parse Error]");
+            backstory.story = trimToLastSentence(storyJson.value("story", "[JSON Parse Error]"));
         } catch (...) {
             backstory.story = "[Eroare la parsarea povestii pacientului]";
         }
@@ -253,7 +262,7 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
 
             json outJson = json::parse(content);
 
-            outcome.narrative = outJson.value("narrative", "[Error parsing narrative]");
+            outcome.narrative = trimToLastSentence(outJson.value("narrative", "[Error parsing narrative]"));
             outcome.healthDelta = outJson.value("health_change", 0);
             outcome.clarityDelta = outJson.value("clarity_change", 0);
             outcome.malpracticeDelta = outJson.value("malpractice_change", 0);
@@ -372,7 +381,7 @@ std::string LLM::generateHouseClue(const std::string& hiddenDiagnosis,
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
-        {"max_tokens", 150},
+        {"max_tokens", 200},
         {"system", systemPrompt},
         {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
         {"temperature", 0.9}
@@ -391,7 +400,7 @@ std::string LLM::generateHouseClue(const std::string& hiddenDiagnosis,
     if (res && res->status == 200) {
         try {
             json responseJson = json::parse(res->body);
-            return responseJson["content"][0]["text"].get<std::string>();
+            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
         } catch (...) {
             return "[Clue generation failed]";
         }
@@ -416,12 +425,14 @@ std::string LLM::generateTeamOpinion(const std::string& personality, const std::
         "Current diagnostic clarity: " + std::to_string(clarity) + "%.";
 
     std::string userPrompt =
-        "Patient symptom: " + symptom + ". "
-        "Dr. House asks the team for theories. Respond as " + agentName + " in one short paragraph. Stay in character.";
+        "Setting: whiteboard room, team diagnostic meeting. The patient is NOT present. "
+        "Dr. House just asked the team: 'What are you thinking?' "
+        "Patient's known symptom: " + symptom + ". "
+        "Respond as " + agentName + " in one short paragraph, speaking directly to House. Stay in character.";
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
-        {"max_tokens", 200},
+        {"max_tokens", 280},
         {"system", systemPrompt},
         {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
         {"temperature", 0.8}
@@ -441,10 +452,183 @@ std::string LLM::generateTeamOpinion(const std::string& personality, const std::
     if (res && res->status == 200) {
         try {
             json responseJson = json::parse(res->body);
-            return responseJson["content"][0]["text"].get<std::string>();
+            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
         } catch (...) {
             return "[JSON Parse Error]";
         }
     }
     return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+}
+
+// --- Phase 7: Eureka Finale ---
+
+std::string LLM::generatePatientMonologue(const std::string& patientName,
+                                           const std::string& symptom) {
+    std::string apiKey;
+    std::ifstream secretFile("secrets.json");
+    if (secretFile.is_open()) {
+        json secrets = json::parse(secretFile);
+        apiKey = secrets.value("ANTHROPIC_API_KEY", "");
+    }
+
+    std::string systemPrompt =
+        "You are a patient lying in a hospital room. Write 3-4 first-person sentences "
+        "describing your experience right now: confusion, fear, the smell of the sterile room, "
+        "the long waiting. Do NOT use any medical terminology. Do NOT name any disease. "
+        "Do NOT mention the doctor yet.";
+
+    std::string userPrompt =
+        "Your name is " + patientName + ". You are experiencing: " + symptom + ".";
+
+    json requestBody = {
+        {"model", "claude-haiku-4-5-20251001"},
+        {"max_tokens", 250},
+        {"system", systemPrompt},
+        {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
+        {"temperature", 0.85}
+    };
+
+    httplib::Client cli("https://api.anthropic.com");
+    cli.set_connection_timeout(5, 0);
+    cli.set_read_timeout(10, 0);
+    httplib::Headers headers = {
+        {"x-api-key", apiKey},
+        {"anthropic-version", "2023-06-01"},
+        {"Content-Type", "application/json"}
+    };
+
+    auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
+
+    if (res && res->status == 200) {
+        try {
+            json responseJson = json::parse(res->body);
+            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
+        } catch (...) {
+            return "[JSON Parse Error]";
+        }
+    }
+    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+}
+
+std::string LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
+                                         const std::string& patientName,
+                                         const std::string& patientComment,
+                                         int round,
+                                         const std::vector<std::string>& history) {
+    std::string apiKey;
+    std::ifstream secretFile("secrets.json");
+    if (secretFile.is_open()) {
+        json secrets = json::parse(secretFile);
+        apiKey = secrets.value("ANTHROPIC_API_KEY", "");
+    }
+
+    std::string systemPrompt;
+    if (round == 0) {
+        systemPrompt =
+            "You are Dr. House who has just solved a diagnosis. You enter the patient's room. "
+            "Give ONE dramatic opening line — cryptic, sarcastic, relentless. One sentence only. "
+            "Do NOT name the diagnosis. The true diagnosis is " + hiddenDiagnosis +
+            " — let it subtly colour your words.";
+    } else {
+        systemPrompt =
+            "You are Dr. House explaining a breakthrough diagnosis to " + patientName + ".\n"
+            "Round " + std::to_string(round) + " of 4. Do NOT name the diagnosis before round 4.\n"
+            "Rounds 1-2: cryptic lifestyle observations hinting at " + hiddenDiagnosis + ".\n"
+            "Round 3: hint at a specific body system or mechanism.\n"
+            "Round 4: name " + hiddenDiagnosis + " explicitly, explain the key diagnostic clue.\n"
+            "Patient just said: '" + patientComment + "'. Acknowledge in one dismissive clause,\n"
+            "then barrel forward with your own thought. Voice: brilliant, sarcastic, relentless.\n"
+            "Keep your response to 2-3 sentences maximum.";
+    }
+
+    // Build message history: history alternates [userComment, assistantResponse, ...]
+    json messagesArray = json::array();
+    for (size_t i = 0; i + 1 < history.size(); i += 2) {
+        messagesArray.push_back({{"role", "user"},      {"content", history[i]}});
+        messagesArray.push_back({{"role", "assistant"}, {"content", history[i + 1]}});
+    }
+    std::string currentMsg = patientComment.empty() ? "You enter the room." : patientComment;
+    messagesArray.push_back({{"role", "user"}, {"content", currentMsg}});
+
+    json requestBody = {
+        {"model", "claude-haiku-4-5-20251001"},
+        {"max_tokens", 300},
+        {"system", systemPrompt},
+        {"messages", messagesArray},
+        {"temperature", 0.9}
+    };
+
+    httplib::Client cli("https://api.anthropic.com");
+    cli.set_connection_timeout(5, 0);
+    cli.set_read_timeout(10, 0);
+    httplib::Headers headers = {
+        {"x-api-key", apiKey},
+        {"anthropic-version", "2023-06-01"},
+        {"Content-Type", "application/json"}
+    };
+
+    auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
+
+    if (res && res->status == 200) {
+        try {
+            json responseJson = json::parse(res->body);
+            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
+        } catch (...) {
+            return "[JSON Parse Error]";
+        }
+    }
+    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+}
+// --- Phase 8: Director's Cut ---
+
+std::string LLM::generateEpisodeScript(const std::string& gameLogSummary,
+                                        const std::string& patientName) {
+    std::string apiKey;
+    std::ifstream secretFile("secrets.json");
+    if (secretFile.is_open()) {
+        json secrets = json::parse(secretFile);
+        apiKey = secrets.value("ANTHROPIC_API_KEY", "");
+    }
+
+    std::string systemPrompt =
+        "You are an Emmy Award-winning House M.D. TV writer. "
+        "Given a game log, write a dramatic TV script for a single episode. "
+        "Include INT./EXT. scene headings, character dialogue, and stage directions. "
+        "If the log contains [EUREKA] entries, those are the climax: reproduce the patient's "
+        "inner monologue and the House diagnosis dialogue VERBATIM as the final scene, "
+        "framed with a perspective-shift note ('WE ARE NOW THE PATIENT'). "
+        "For loss outcomes, build to a tragic climax matching the log. "
+        "Keep it to roughly two pages. Use only characters and events present in the log.";
+
+    std::string userPrompt =
+        "Write the House M.D. episode script for patient " + patientName + ".\n\n" + gameLogSummary;
+
+    json requestBody = {
+        {"model", "claude-haiku-4-5-20251001"},
+        {"max_tokens", 1200},
+        {"system", systemPrompt},
+        {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
+        {"temperature", 0.85}
+    };
+
+    httplib::Client cli("https://api.anthropic.com");
+    cli.set_connection_timeout(5, 0);
+    cli.set_read_timeout(30, 0);
+    httplib::Headers headers = {
+        {"x-api-key", apiKey},
+        {"anthropic-version", "2023-06-01"},
+        {"Content-Type", "application/json"}
+    };
+
+    auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
+
+    if (res && res->status == 200) {
+        try {
+            json responseJson = json::parse(res->body);
+            return responseJson["content"][0]["text"].get<std::string>();
+        } catch (...) {
+            return "[Script generation failed — JSON parse error]";
+        }
+    }
+    return "[Script generation failed — API error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
 }

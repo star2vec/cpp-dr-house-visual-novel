@@ -54,6 +54,19 @@ public:
     std::string generateHouseClue(const std::string& hiddenDiagnosis,
                                   const std::string& patientName,
                                   const std::string& symptom);
+
+    // Phase 7: Eureka Finale
+    std::string generatePatientMonologue(const std::string& patientName,
+                                         const std::string& symptom);
+    std::string generateEurekaDialogue(const std::string& hiddenDiagnosis,
+                                       const std::string& patientName,
+                                       const std::string& patientComment,
+                                       int round,
+                                       const std::vector<std::string>& history);
+
+    // Phase 8: Director's Cut
+    std::string generateEpisodeScript(const std::string& gameLogSummary,
+                                      const std::string& patientName);
 };
 
 #endif

@@ -3,10 +3,14 @@
 #include "Exceptions.h"
 #include "MedicalActionFactory.h"
 #include "TerminalUI.h"
+#include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <thread>
 
 GameEngine::GameEngine(Patient p) : patient(p) {}
 
@@ -102,7 +106,8 @@ void GameEngine::showMedicalSubMenu() {
 
     TerminalUI::clearScreen();
     std::cout << "\n=== PROCEDURE RESULTS ===\n\n";
-    std::cout << outcome.narrative << "\n\n";
+    TerminalUI::typewrite(outcome.narrative);
+    std::cout << "\n\n";
     std::cout << "------------------------------------\n";
     std::cout << "Health:       " << (outcome.healthDelta > 0 ? "+" : "") << outcome.healthDelta << "  (Current: " << patient.getHealth() << "/100)\n";
     std::cout << "Clarity:      " << (outcome.clarityDelta > 0 ? "+" : "") << outcome.clarityDelta << "% (Current: " << patient.getClarity() << "%)\n";
@@ -164,7 +169,9 @@ void GameEngine::showSocialSubMenu() {
                 patient.getSymptom(), patient.getHiddenDiagnosis(),
                 patient.getClarity(), aiBrain);
 
-            std::cout << "\033[1;33m" << agent->getName() << ":\033[0m " << opinion << "\n\n";
+            std::cout << "\033[1;33m" << agent->getName() << ":\033[0m ";
+            TerminalUI::typewrite(opinion);
+            std::cout << "\n\n";
 
             // Downcast: Chase's wild guess occasionally sparks something (rubric)
             if (auto* chase = dynamic_cast<ChaseAgent*>(agent.get())) {
@@ -282,7 +289,9 @@ void GameEngine::showMiscellaneousSubMenu() {
             patient.getHiddenDiagnosis(), patient.getName(), patient.getSymptom());
         patient.modifyClarity(15);
         patient.modifyMalpractice(20);
-        std::cout << "\n\033[1;33m\"" << clue << "\"\033[0m\n\n";
+        std::cout << "\n\033[1;33m\"";
+        TerminalUI::typewrite(clue);
+        std::cout << "\"\033[0m\n\n";
         std::cout << "Clarity:     +15%  (Current: " << patient.getClarity() << "%)\n";
         std::cout << "Malpractice: +20%  (Current: " << patient.getMalpractice() << "%)\n";
 
@@ -307,21 +316,7 @@ void GameEngine::showMiscellaneousSubMenu() {
 void GameEngine::run() {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
     try {
-        // 1. GENERAM POVESTEA PACIENTULUI LA START
-        TerminalUI::clearScreen();
-        std::cout << "Reading patient file...\n(House is complaining about Clinic Duty)\n";
-
-        PatientBackstory intro = aiBrain.generateAdmissionStory(patient.getName(), patient.getHealth(), patient.getSymptom());
-
-        TerminalUI::clearScreen();
-        std::cout << "=======================================\n";
-        std::cout << "   DR. HOUSE : THE VISUAL NOVEL        \n";
-        std::cout << "=======================================\n\n";
-        std::cout << "\033[1;33m" << intro.story << "\033[0m\n\n";
-        std::cout << "(Press ENTER to start your shift...)";
-        while(TerminalUI::getKeyPress() != 3);
-
-        // 2. INTRAM IN JOC
+        // INTRAM IN JOC
         bool running = true;
         int selectedIndex = 0;
 
@@ -395,9 +390,8 @@ void GameEngine::run() {
                 checkEndings(); // loss conditions always take priority over win
 
                 if (patient.getClarity() >= 100 && patient.getHealth() > 0) {
-                    TerminalUI::clearScreen();
-                    std::cout << "\n[ CURED ] You figured it out. It wasn't Lupus.\nYOU WIN!\n";
-                    running = false;
+                    runEurekaFinale();
+                    return;
                 }
             }
         }
@@ -405,13 +399,166 @@ void GameEngine::run() {
     catch (const PatientDeathException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
+        triggerDirectorsCut(e.what());
     }
     catch (const FiredByHospitalException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
+        triggerDirectorsCut(e.what());
     }
     catch (const GameException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
+        triggerDirectorsCut(e.what());
     }
+}
+
+// --- EUREKA FINALE ---
+
+void GameEngine::triggerDirectorsCut(const std::string& outcome) {
+    // Build summary for the LLM
+    std::ostringstream summary;
+    summary << "PATIENT: " << patient.getName() << "\n";
+    summary << "OUTCOME: " << outcome << "\n";
+    summary << "TURNS PLAYED: " << turn << "\n\n";
+
+    summary << "=== NARRATIVE LOG ===\n";
+    for (const auto& entry : narrativeLog.getEntries())
+        summary << "  " << entry << "\n";
+
+    summary << "\n=== ACTION LOG ===\n";
+    for (const auto& record : actionLog.getEntries()) {
+        std::ostringstream rec;
+        rec << record;
+        summary << "  " << rec.str() << "\n";
+    }
+
+    std::cout << "\n\033[2m[ Generating Director's Cut episode script... ]\033[0m\n";
+    std::cout.flush();
+
+    std::string script = aiBrain.generateEpisodeScript(summary.str(), patient.getName());
+
+    // Sanitise patient name for use in a filename
+    std::string safeName = patient.getName();
+    for (char& c : safeName)
+        if (c == ' ' || c == '/') c = '_';
+
+    std::string filename = "Episode_" + safeName + ".txt";
+    std::ofstream outFile(filename);
+    if (outFile.is_open()) {
+        outFile << "HOUSE M.D. — \"" << patient.getName() << "\"\n";
+        outFile << std::string(60, '=') << "\n\n";
+        outFile << script << "\n\n";
+        outFile << std::string(60, '=') << "\n";
+        outFile << "[ Game log summary ]\n";
+        outFile << summary.str();
+        outFile.close();
+        std::cout << "\033[1;32m[ Director's Cut saved to " << filename << " ]\033[0m\n";
+    } else {
+        std::cout << "\033[1;31m[ Could not write " << filename << " ]\033[0m\n";
+        std::cout << script << "\n";
+    }
+}
+
+void GameEngine::runEurekaFinale() {
+    const std::string patientName     = patient.getName();
+    const std::string symptom         = patient.getSymptom();
+    const std::string hiddenDiagnosis = patient.getHiddenDiagnosis();
+
+    // --- Beat 1: Perspective shift ---
+    TerminalUI::clearScreen();
+    std::cout << "\n";
+    std::cout << "  \033[1;35m╔══════════════════════════════════════════╗\033[0m\n";
+    std::cout << "  \033[1;35m║   PERSPECTIVE SHIFT: YOU ARE NOW         ║\033[0m\n";
+    std::cout << "  \033[1;35m║   THE PATIENT.                           ║\033[0m\n";
+    std::cout << "  \033[1;35m╚══════════════════════════════════════════╝\033[0m\n";
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    // --- Beat 2: Patient monologue ---
+    TerminalUI::clearScreen();
+    std::cout << "\n  (Generating patient monologue...)\n";
+    std::cout.flush();
+    std::string monologue = aiBrain.generatePatientMonologue(patientName, symptom);
+    narrativeLog += std::string("[EUREKA — PATIENT PERSPECTIVE] ") + patientName + " thinks: " + monologue;
+    TerminalUI::clearScreen();
+    std::cout << "\n\033[3m";
+    TerminalUI::typewrite(monologue);
+    std::cout << "\033[0m\n";
+    std::cout << "\n(Press ENTER to continue...)\n";
+    while (TerminalUI::getKeyPress() != 3);
+
+    // --- Beat 3: House enters ---
+    TerminalUI::clearScreen();
+    std::cout << "\n\033[2m[ The door swings open. A cane hits the floor. ]\033[0m\n\n";
+    std::cout << "  (House is thinking...)\n";
+    std::cout.flush();
+    std::string openingLine = aiBrain.generateEurekaDialogue(hiddenDiagnosis, patientName, "", 0, {});
+    narrativeLog += std::string("[EUREKA — HOUSE ENTERS] House: ") + openingLine;
+    std::cout << "\033[1;33mHouse:\033[0m ";
+    TerminalUI::typewrite(openingLine);
+    std::cout << "\n";
+    std::cout << "\n(Press ENTER to continue...)\n";
+    while (TerminalUI::getKeyPress() != 3);
+
+    // --- Beat 4: Diagnosis loop ---
+    std::vector<std::string> history; // alternates [playerComment, houseResponse, ...]
+
+    const std::vector<std::vector<std::string>> commentOptions = {
+        {"What do you mean?",          "I just want to go home.",             "..."},
+        {"That doesn't make sense.",    "Are you even listening to me?",       "Please just tell me."},
+        {"My heart?",                   "What body system?",                   "I don't understand any of this."},
+        {"Is it serious?",              "Will I be okay?",                     "I knew something was wrong."}
+    };
+
+    for (int round = 1; round <= 4; ++round) {
+        const std::vector<std::string>& opts = commentOptions[round - 1];
+
+        int sel = 0;
+        bool chosen = false;
+        while (!chosen) {
+            TerminalUI::clearScreen();
+            std::cout << "\n\033[1;35m[ ROUND " << round << "/4 — How do you respond? ]\033[0m\n\n";
+            for (int i = 0; i < (int)opts.size(); ++i) {
+                if (i == sel)
+                    std::cout << "  -> \033[1;36m" << opts[i] << "\033[0m\n";
+                else
+                    std::cout << "     " << opts[i] << "\n";
+            }
+            int key = TerminalUI::getKeyPress();
+            if (key == 1) { sel--; if (sel < 0) sel = (int)opts.size() - 1; }
+            else if (key == 2) { sel++; if (sel >= (int)opts.size()) sel = 0; }
+            else if (key == 3) chosen = true;
+        }
+
+        std::string comment = opts[sel];
+
+        TerminalUI::clearScreen();
+        std::cout << "\n\033[2mYou: " << comment << "\033[0m\n\n";
+        std::cout << "  (House is thinking...)\n";
+        std::cout.flush();
+
+        std::string houseResponse = aiBrain.generateEurekaDialogue(
+            hiddenDiagnosis, patientName, comment, round, history);
+
+        narrativeLog += std::string("[EUREKA — ROUND ") + std::to_string(round) + "/4]"
+                      + " Patient: \"" + comment + "\""
+                      + " | House: \"" + houseResponse + "\"";
+
+        std::cout << "\033[1;33mHouse:\033[0m ";
+        TerminalUI::typewrite(houseResponse);
+        std::cout << "\n";
+
+        history.push_back(comment);
+        history.push_back(houseResponse);
+
+        std::cout << "\n(Press ENTER to continue...)\n";
+        while (TerminalUI::getKeyPress() != 3);
+    }
+
+    // --- Beat 5: Resolution ---
+    narrativeLog += std::string("[EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: ") + hiddenDiagnosis;
+    TerminalUI::clearScreen();
+    std::cout << "\n\033[2mHouse limps out without looking back.\033[0m\n";
+    std::cout << "\033[2m[ You have a diagnosis. Whether you want it is another question. ]\033[0m\n\n";
+    triggerDirectorsCut("WIN — Diagnosis revealed: " + hiddenDiagnosis);
 }

@@ -16,10 +16,13 @@ private:
     GameLog<ActionRecord>    actionLog;
 
     void checkEndings();
-    
+
     void showMedicalSubMenu();
     void showSocialSubMenu();
     void showMiscellaneousSubMenu();
+
+    void runEurekaFinale();
+    void triggerDirectorsCut(const std::string& outcome);
 
 public:
     // Acum primește un pacient din exterior!

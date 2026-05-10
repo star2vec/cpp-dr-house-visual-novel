@@ -1,7 +1,10 @@
 #ifndef TERMINAL_UI_H
 #define TERMINAL_UI_H
 
+#include <chrono>
 #include <iostream>
+#include <string>
+#include <thread>
 
 #ifdef _WIN32
     #include <conio.h>
@@ -12,6 +15,16 @@
 
 class TerminalUI {
 public:
+    static void typewrite(const std::string& text, int delayMs = 18) {
+        for (char c : text) {
+            std::cout << c;
+            std::cout.flush();
+            int pause = delayMs;
+            if (c == '.' || c == '!' || c == '?') pause = 40;
+            std::this_thread::sleep_for(std::chrono::milliseconds(pause));
+        }
+    }
+
     static void clearScreen() {
         // ANSI escape code to clear screen
         std::cout << "\033[2J\033[1;1H";
