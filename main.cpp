@@ -51,9 +51,51 @@ int main() {
 #include "GameEngine.h"
 #include "TerminalUI.h"
 #include "LLM.h"
+#include "Exceptions.h"
 #include <iostream>
+#include <string>
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc >= 2 && std::string(argv[1]) == "--test") {
+        std::cout << "=== DR. HOUSE AUTO-TEST MODE ===\n\n";
+        int passed = 0;
+
+        try {
+            throw PatientDeathException(1);
+        } catch (GameException& e) {
+            std::cout << "[PASS] PatientDeathException caught as GameException: "
+                      << e.what() << "\n";
+            ++passed;
+        }
+
+        try {
+            throw FiredByHospitalException(1);
+        } catch (GameException& e) {
+            std::cout << "[PASS] FiredByHospitalException caught as GameException: "
+                      << e.what() << "\n";
+            ++passed;
+        }
+
+        try {
+            throw OutOfBudgetException(1);
+        } catch (GameException& e) {
+            std::cout << "[PASS] OutOfBudgetException caught as GameException: "
+                      << e.what() << "\n";
+            ++passed;
+        }
+
+        try {
+            throw MayfieldWardException(1);
+        } catch (GameException& e) {
+            std::cout << "[PASS] MayfieldWardException caught as GameException: "
+                      << e.what() << "\n";
+            ++passed;
+        }
+
+        std::cout << "\nAll " << passed << "/4 exception tests PASSED.\n";
+        return 0;
+    }
+
     LLM aiBrain;
 
     TerminalUI::clearScreen();

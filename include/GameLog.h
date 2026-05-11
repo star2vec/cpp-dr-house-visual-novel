@@ -10,6 +10,7 @@
 struct ActionRecord {
     std::string actionName;
     std::string actionType;
+    std::string brief;       // short case-board summary, e.g. "elevated WBC, bilateral infiltrates"
     int healthDelta     = 0;
     int clarityDelta    = 0;
     int malpracticeDelta = 0;

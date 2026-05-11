@@ -18,9 +18,20 @@ struct PatientBackstory {
 // Structura pentru consecintele medicale
 struct MedicalOutcome {
     std::string narrative;
+    std::string brief;       // <=8 words for case board, e.g. "elevated WBC, bilateral infiltrates"
     int healthDelta;
     int clarityDelta;
     int malpracticeDelta;
+};
+
+struct WilsonResult {
+    std::string dialogue;    // full spoken text (typewriter-printed)
+    std::string brief;       // <=8 words for case board, e.g. "probed diet and toxic exposure"
+};
+
+struct TeamOpinionResult {
+    std::string opinion;     // full spoken text (typewriter-printed)
+    std::string brief;       // <=8 words for case board, e.g. "suspects autoimmune, wants ANA"
 };
 
 struct PatientProfile {
@@ -49,9 +60,9 @@ public:
     std::vector<PatientProfile> generatePatientFiles(int count = 3);
 
     // Phase 5: Team Brainstorm (AIAgent hierarchy)
-    std::string generateTeamOpinion(const std::string& personality, const std::string& agentName,
-                                    const std::string& symptom, const std::string& hiddenDiagnosis,
-                                    int clarity);
+    TeamOpinionResult generateTeamOpinion(const std::string& personality, const std::string& agentName,
+                                          const std::string& symptom, const std::string& hiddenDiagnosis,
+                                          int clarity);
 
     // Phase 6: Chaos menu — illegal home visit clue
     std::string generateHouseClue(const std::string& hiddenDiagnosis,
@@ -59,10 +70,10 @@ public:
                                   const std::string& symptom);
 
     // Wilson consult — lifestyle/context sounding board
-    std::string generateWilsonConsult(const std::string& symptom,
-                                      const std::string& hiddenDiagnosis,
-                                      const std::string& patientName,
-                                      int clarity);
+    WilsonResult generateWilsonConsult(const std::string& symptom,
+                                       const std::string& hiddenDiagnosis,
+                                       const std::string& patientName,
+                                       int clarity);
 
     // Whiteboard — free-text medical brainstorm
     std::string generateWhiteboardThought(const std::string& question,

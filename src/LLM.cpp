@@ -218,7 +218,9 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
 
     std::string systemPrompt =
         "You are a Game Master for a medical simulator. You MUST return strictly a JSON object with EXACTLY these keys: "
-        "'narrative' (string), 'health_change' (integer, can be negative), 'clarity_change' (integer), 'malpractice_change' (integer). "
+        "'narrative' (string), 'brief' (string), 'health_change' (integer, can be negative), 'clarity_change' (integer), 'malpractice_change' (integer). "
+        "The 'brief' key: 6 words max summarizing the key clinical finding only (e.g. 'elevated WBC, bilateral infiltrates'). "
+        "NEVER include the diagnosis name in 'brief'. "
         "Do NOT wrap the JSON in markdown blocks. Output absolutely NOTHING else.\n"
         "[GAME MASTER SECRET — NOT SHOWN TO PLAYER]: The patient's true diagnosis is: " + hiddenDiagnosis + ". "
         "Use this to judge whether the action is medically appropriate. "
@@ -278,6 +280,7 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
             json outJson = json::parse(content);
 
             outcome.narrative = trimToLastSentence(outJson.value("narrative", "[Error parsing narrative]"));
+            outcome.brief = outJson.value("brief", "");
             outcome.healthDelta = outJson.value("health_change", 0);
             outcome.clarityDelta = outJson.value("clarity_change", 0);
             outcome.malpracticeDelta = outJson.value("malpractice_change", 0);
@@ -427,10 +430,12 @@ std::string LLM::generateHouseClue(const std::string& hiddenDiagnosis,
     return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
 }
 
-std::string LLM::generateWilsonConsult(const std::string& symptom,
-                                       const std::string& hiddenDiagnosis,
-                                       const std::string& patientName,
-                                       int clarity) {
+WilsonResult LLM::generateWilsonConsult(const std::string& symptom,
+                                        const std::string& hiddenDiagnosis,
+                                        const std::string& patientName,
+                                        int clarity) {
+    WilsonResult result;
+
     std::string apiKey = "";
     std::ifstream secretFile("secrets.json");
     if (secretFile.is_open()) {
@@ -448,7 +453,11 @@ std::string LLM::generateWilsonConsult(const std::string& symptom,
         "WITHOUT naming it or any medical label for it. "
         "Tone: warm but exasperated, genuinely invested in the patient as a person. "
         "2-3 sentences maximum. No medical jargon. Ask questions — don't answer them. "
-        "CRITICAL: Output ONLY spoken words. No stage directions. No asterisks. No action descriptions.";
+        "CRITICAL: Output ONLY spoken words in 'dialogue'. No stage directions. No asterisks. "
+        "Return a JSON object with exactly two keys: "
+        "'dialogue' (string — Wilson's full spoken lines) and "
+        "'brief' (string — 6 words max capturing what Wilson probed, e.g. 'asked about diet and occupation'). "
+        "Do NOT wrap in markdown. Output only the raw JSON.";
 
     std::string userPrompt =
         "House storms in: \"I've got " + patientName + ". Presenting with: " + symptom + ". "
@@ -456,7 +465,7 @@ std::string LLM::generateWilsonConsult(const std::string& symptom,
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
-        {"max_tokens", 180},
+        {"max_tokens", 220},
         {"system", systemPrompt},
         {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
         {"temperature", 0.8}
@@ -477,31 +486,41 @@ std::string LLM::generateWilsonConsult(const std::string& symptom,
             json responseJson = json::parse(res->body);
             std::string text = responseJson["content"][0]["text"].get<std::string>();
 
-            // Strip any *stage directions* the model sneaked in
+            size_t firstBrace = text.find('{');
+            size_t lastBrace  = text.rfind('}');
+            if (firstBrace != std::string::npos && lastBrace != std::string::npos)
+                text = text.substr(firstBrace, lastBrace - firstBrace + 1);
+
+            json parsed = json::parse(text);
+            std::string dialogue = parsed.value("dialogue", "[Wilson is unreachable.]");
+            result.brief = parsed.value("brief", "");
+
+            // Strip any *stage directions* the model sneaked into dialogue
             std::string clean;
             bool inStage = false;
-            for (char c : text) {
+            for (char c : dialogue) {
                 if (c == '*') { inStage = !inStage; }
                 else if (!inStage) clean += c;
             }
-            // Collapse leading whitespace and embedded newlines
             for (char& c : clean) if (c == '\n' || c == '\r' || c == '\t') c = ' ';
             size_t start = clean.find_first_not_of(' ');
             if (start != std::string::npos) clean = clean.substr(start);
-            // Collapse double spaces
-            std::string final;
+            std::string collapsed;
             bool lastSp = false;
             for (char c : clean) {
-                if (c == ' ') { if (!lastSp) final += c; lastSp = true; }
-                else { final += c; lastSp = false; }
+                if (c == ' ') { if (!lastSp) collapsed += c; lastSp = true; }
+                else { collapsed += c; lastSp = false; }
             }
-
-            return trimToLastSentence(final);
+            result.dialogue = trimToLastSentence(collapsed);
         } catch (...) {
-            return "[Wilson's office is empty — probably at a divorce attorney's.]";
+            result.dialogue = "[Wilson's office is empty — probably at a divorce attorney's.]";
+            result.brief = "";
         }
+    } else {
+        result.dialogue = "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+        result.brief = "";
     }
-    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+    return result;
 }
 
 std::string LLM::generateWhiteboardThought(const std::string& question,
@@ -560,9 +579,11 @@ std::string LLM::generateWhiteboardThought(const std::string& question,
     return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
 }
 
-std::string LLM::generateTeamOpinion(const std::string& personality, const std::string& agentName,
-                                      const std::string& symptom, const std::string& hiddenDiagnosis,
-                                      int clarity) {
+TeamOpinionResult LLM::generateTeamOpinion(const std::string& personality, const std::string& agentName,
+                                            const std::string& symptom, const std::string& hiddenDiagnosis,
+                                            int clarity) {
+    TeamOpinionResult result;
+
     std::string apiKey = "";
     std::ifstream secretFile("secrets.json");
     if (secretFile.is_open()) {
@@ -575,18 +596,22 @@ std::string LLM::generateTeamOpinion(const std::string& personality, const std::
         "[GAME MASTER SECRET — NOT SHOWN TO PLAYER]: The patient's true diagnosis is: " + hiddenDiagnosis + ". "
         "Let this subtly colour your instinct — speak of body systems, mechanisms, and clinical patterns. "
         "NEVER use the disease name or any phrase that uniquely identifies it. "
-        "Current diagnostic clarity: " + std::to_string(clarity) + "%.";
+        "Current diagnostic clarity: " + std::to_string(clarity) + "%.\n"
+        "Return a JSON object with exactly two keys: "
+        "'opinion' (string — your full spoken response, 2-3 punchy sentences) and "
+        "'brief' (string — 6 words max capturing your key clinical suspicion, e.g. 'suspects autoimmune, recommends ANA panel'). "
+        "Do NOT wrap in markdown. Output only the raw JSON.";
 
     std::string userPrompt =
         "Setting: whiteboard room, team diagnostic meeting. The patient is NOT present. "
         "Dr. House just asked: 'What are you thinking?' "
         "Patient's known symptom: " + symptom + ". "
-        "Respond as " + agentName + " in 2-3 punchy sentences, speaking directly to House. "
+        "Respond as " + agentName + " speaking directly to House. "
         "Be fast and opinionated — no preamble, no hedging. Stay in character.";
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
-        {"max_tokens", 150},
+        {"max_tokens", 200},
         {"system", systemPrompt},
         {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
         {"temperature", 0.8}
@@ -606,12 +631,25 @@ std::string LLM::generateTeamOpinion(const std::string& personality, const std::
     if (res && res->status == 200) {
         try {
             json responseJson = json::parse(res->body);
-            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
+            std::string text = responseJson["content"][0]["text"].get<std::string>();
+
+            size_t firstBrace = text.find('{');
+            size_t lastBrace  = text.rfind('}');
+            if (firstBrace != std::string::npos && lastBrace != std::string::npos)
+                text = text.substr(firstBrace, lastBrace - firstBrace + 1);
+
+            json parsed = json::parse(text);
+            result.opinion = trimToLastSentence(parsed.value("opinion", "[JSON Parse Error]"));
+            result.brief   = parsed.value("brief", "");
         } catch (...) {
-            return "[JSON Parse Error]";
+            result.opinion = "[JSON Parse Error]";
+            result.brief   = "";
         }
+    } else {
+        result.opinion = "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+        result.brief   = "";
     }
-    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+    return result;
 }
 
 // --- Phase 7: Eureka Finale ---

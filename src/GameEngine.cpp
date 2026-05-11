@@ -6,6 +6,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -62,6 +63,8 @@ void GameEngine::showMedicalSubMenu() {
                 else
                     std::cout << "     " << catLabels[i] << "\n";
             }
+            renderCaseBoard();
+
             int key = TerminalUI::getKeyPress();
             if (key == 1) { catIndex--; if (catIndex < 0) catIndex = static_cast<int>(catLabels.size()) - 1; }
             else if (key == 2) { catIndex++; if (catIndex >= static_cast<int>(catLabels.size())) catIndex = 0; }
@@ -99,6 +102,8 @@ void GameEngine::showMedicalSubMenu() {
                 std::cout << "  -> \033[1;31m<< Back to categories\033[0m\n";
             else
                 std::cout << "     << Back to categories\n";
+
+            renderCaseBoard();
 
             int key = TerminalUI::getKeyPress();
             if (key == 1) { selIndex--; if (selIndex < 0) selIndex = static_cast<int>(filtered.size()); }
@@ -140,6 +145,7 @@ void GameEngine::showMedicalSubMenu() {
     ActionRecord record;
     record.actionName        = actionName;
     record.actionType        = actionType;
+    record.brief             = outcome.brief;
     record.healthDelta       = outcome.healthDelta;
     record.clarityDelta      = outcome.clarityDelta;
     record.malpracticeDelta  = outcome.malpracticeDelta;
@@ -239,16 +245,16 @@ void GameEngine::showSocialSubMenu() {
             std::cout.flush();
 
             // Polymorphic dispatch via template method (rubric)
-            std::string opinion = agent->brainstorm(
+            TeamOpinionResult result = agent->brainstorm(
                 patient.getSymptom(), patient.getHiddenDiagnosis(),
                 patient.getClarity(), aiBrain);
 
             std::cout << "\033[1;33m" << agent->getName() << ":\033[0m ";
-            TerminalUI::typewrite(opinion);
+            TerminalUI::typewrite(result.opinion);
             std::cout << "\n\n";
 
-            // Log each opinion individually for the Case Board
-            narrativeLog += std::string("[BRAINSTORM: ") + agent->getName() + "] " + opinion;
+            narrativeLog += std::string("[BRAINSTORM: ") + agent->getName() + "] " + result.opinion;
+            narrativeLog += std::string("[BRAINSTORM_BRIEF: ") + agent->getName() + "] " + result.brief;
 
             // Downcast: Chase's wild guess occasionally sparks something (rubric)
             if (auto* chase = dynamic_cast<ChaseAgent*>(agent.get())) {
@@ -273,16 +279,17 @@ void GameEngine::showSocialSubMenu() {
         std::cout << "  (Wilson is thinking...)\n";
         std::cout.flush();
 
-        std::string consultation = aiBrain.generateWilsonConsult(
+        WilsonResult wilsonResult = aiBrain.generateWilsonConsult(
             patient.getSymptom(), patient.getHiddenDiagnosis(),
             patient.getName(), patient.getClarity()
         );
 
         patient.modifyClarity(5);
-        narrativeLog += std::string("[WILSON] ") + consultation;
+        narrativeLog += std::string("[WILSON] ") + wilsonResult.dialogue;
+        narrativeLog += std::string("[WILSON_BRIEF] ") + wilsonResult.brief;
 
         std::cout << "\033[1;33mWilson:\033[0m ";
-        TerminalUI::typewrite(consultation);
+        TerminalUI::typewrite(wilsonResult.dialogue);
         std::cout << "\n\n";
         std::cout << "Clarity: +5%  (Current: " << patient.getClarity() << "%)\n";
 
@@ -537,17 +544,14 @@ void GameEngine::run() {
     catch (const PatientDeathException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
-        triggerDirectorsCut(e.what());
     }
     catch (const FiredByHospitalException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
-        triggerDirectorsCut(e.what());
     }
     catch (const GameException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
-        triggerDirectorsCut(e.what());
     }
 }
 
@@ -587,32 +591,31 @@ void GameEngine::renderCaseBoard() {
         return s.size() >= p.size() && s.compare(0, p.size(), p) == 0;
     };
 
-    // Parse the narrative log
-    std::vector<std::string> testNames;
-    std::vector<std::pair<std::string, std::string>> agentOpinions; // name -> latest opinion
+    // Tests come from actionLog (have name + LLM-generated brief)
+    std::vector<std::pair<std::string, std::string>> testEntries; // {name, brief}
+    for (const auto& rec : actionLog.getEntries())
+        testEntries.push_back({rec.actionName, rec.brief});
+
+    // Team briefs, clues, Wilson briefs come from narrativeLog tags
+    std::vector<std::pair<std::string, std::string>> agentBriefs; // {name, brief}
     std::vector<std::string> clues, wilsonItems;
 
     for (const auto& entry : narrativeLog.getEntries()) {
-        if (sw(entry, "[Lab Test: ") || sw(entry, "[Treatment: ") || sw(entry, "[Risky Procedure: ")) {
-            size_t colon = entry.find(": ");
-            size_t brkt  = entry.find(']');
-            if (colon != std::string::npos && brkt != std::string::npos && colon < brkt)
-                testNames.push_back(entry.substr(colon + 2, brkt - colon - 2));
-        } else if (sw(entry, "[BRAINSTORM: ")) {
+        if (sw(entry, "[BRAINSTORM_BRIEF: ")) {
             size_t nameEnd = entry.find(']');
             if (nameEnd != std::string::npos && nameEnd + 2 < entry.size()) {
-                std::string name = entry.substr(13, nameEnd - 13);
-                std::string op   = entry.substr(nameEnd + 2);
+                std::string name  = entry.substr(18, nameEnd - 18);
+                std::string brief = entry.substr(nameEnd + 2);
                 bool found = false;
-                for (auto& kv : agentOpinions) {
-                    if (kv.first == name) { kv.second = op; found = true; break; }
+                for (auto& kv : agentBriefs) {
+                    if (kv.first == name) { kv.second = brief; found = true; break; }
                 }
-                if (!found) agentOpinions.push_back({name, op});
+                if (!found) agentBriefs.push_back({name, brief});
             }
         } else if (sw(entry, "[CLUE] ")) {
             clues.push_back(entry.substr(7));
-        } else if (sw(entry, "[WILSON] ")) {
-            wilsonItems.push_back(entry.substr(9));
+        } else if (sw(entry, "[WILSON_BRIEF] ")) {
+            wilsonItems.push_back(entry.substr(15));
         }
     }
 
@@ -623,29 +626,22 @@ void GameEngine::renderCaseBoard() {
     std::cout << sec(title) << "\n";
     std::cout << row("Symptom: " + trunc(patient.getSymptom(), CW - 9)) << "\n";
 
-    // TESTS — just action names, space-efficient
-    if (!testNames.empty()) {
+    // TESTS — one line per action: "CT Scan: elevated WBC, bilateral infiltrates"
+    if (!testEntries.empty()) {
         std::cout << sec("TESTS") << "\n";
-        std::string line;
-        for (size_t i = 0; i < testNames.size(); ++i) {
-            std::string sep = i == 0 ? "" : "  /  ";
-            if (!line.empty() && line.size() + sep.size() + testNames[i].size() > CW) {
-                std::cout << row(line) << "\n";
-                line = testNames[i];
-            } else {
-                line += sep + testNames[i];
-            }
+        for (const auto& te : testEntries) {
+            std::string entry = te.second.empty() ? te.first : te.first + ": " + te.second;
+            std::cout << row(trunc(entry, CW)) << "\n";
         }
-        if (!line.empty()) std::cout << row(line) << "\n";
     }
 
-    // TEAM — one line per agent, aligned, first-sentence truncated
-    if (!agentOpinions.empty()) {
+    // TEAM — one line per agent: "Chase:    suspects autoimmune, wants ANA panel"
+    if (!agentBriefs.empty()) {
         std::cout << sec("TEAM") << "\n";
-        for (const auto& kv : agentOpinions) {
+        for (const auto& kv : agentBriefs) {
             std::string prefix = kv.first + ": ";
-            while (prefix.size() < 10) prefix += ' ';   // align to 10 chars
-            std::cout << row(prefix + brief(kv.second, CW - prefix.size())) << "\n";
+            while (prefix.size() < 10) prefix += ' ';
+            std::cout << row(prefix + trunc(kv.second, CW - prefix.size())) << "\n";
         }
     }
 
@@ -656,14 +652,14 @@ void GameEngine::renderCaseBoard() {
             std::cout << row(brief(c, CW)) << "\n";
     }
 
-    // WILSON — consult questions only
+    // WILSON — brief of what he probed
     if (!wilsonItems.empty()) {
         std::cout << sec("WILSON") << "\n";
         for (const auto& w : wilsonItems)
-            std::cout << row(brief(w, CW)) << "\n";
+            std::cout << row(trunc(w, CW)) << "\n";
     }
 
-    if (testNames.empty() && agentOpinions.empty() && clues.empty() && wilsonItems.empty())
+    if (testEntries.empty() && agentBriefs.empty() && clues.empty() && wilsonItems.empty())
         std::cout << row("No findings yet. Run tests, consult the team, or visit the patient's home.") << "\n";
 
     std::cout << hline << "\n";
@@ -699,7 +695,8 @@ void GameEngine::triggerDirectorsCut(const std::string& outcome) {
     for (char& c : safeName)
         if (c == ' ' || c == '/') c = '_';
 
-    std::string filename = "Episode_" + safeName + ".txt";
+    std::filesystem::create_directories("episodes");
+    std::string filename = "episodes/Episode_" + safeName + ".txt";
     std::ofstream outFile(filename);
     if (outFile.is_open()) {
         outFile << "HOUSE M.D. — \"" << patient.getName() << "\"\n";

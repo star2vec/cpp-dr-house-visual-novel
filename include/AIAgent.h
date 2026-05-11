@@ -22,10 +22,10 @@ public:
     }
 
     // Template Method: fixed skeleton, calls the pure-virtual hook
-    std::string brainstorm(const std::string& symptom,
-                           const std::string& hiddenDiagnosis,
-                           int clarity,
-                           LLM& ai) const {
+    TeamOpinionResult brainstorm(const std::string& symptom,
+                                 const std::string& hiddenDiagnosis,
+                                 int clarity,
+                                 LLM& ai) const {
         return ai.generateTeamOpinion(getPersonalityPrompt(), agentName,
                                       symptom, hiddenDiagnosis, clarity);
     }
