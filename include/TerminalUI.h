@@ -16,13 +16,42 @@
 class TerminalUI {
 public:
     static void typewrite(const std::string& text, int delayMs = 18) {
+#ifdef _WIN32
         for (char c : text) {
             std::cout << c;
             std::cout.flush();
-            int pause = delayMs;
-            if (c == '.' || c == '!' || c == '?') pause = 40;
+            int pause = (c == '.' || c == '!' || c == '?') ? 40 : delayMs;
             std::this_thread::sleep_for(std::chrono::milliseconds(pause));
         }
+#else
+        struct termios oldt, rawt;
+        tcgetattr(STDIN_FILENO, &oldt);
+        rawt = oldt;
+        rawt.c_lflag &= ~(ICANON | ECHO);
+        rawt.c_cc[VMIN] = 0;
+        rawt.c_cc[VTIME] = 0;
+        tcsetattr(STDIN_FILENO, TCSANOW, &rawt);
+
+        bool skip = false;
+        for (char c : text) {
+            if (!skip) {
+                char ch;
+                if (read(STDIN_FILENO, &ch, 1) > 0) {
+                    skip = true;
+                    char drain[16];
+                    while (read(STDIN_FILENO, drain, sizeof(drain)) > 0) {}
+                }
+            }
+            std::cout << c;
+            if (!skip) {
+                std::cout.flush();
+                int pause = (c == '.' || c == '!' || c == '?') ? 40 : delayMs;
+                std::this_thread::sleep_for(std::chrono::milliseconds(pause));
+            }
+        }
+        std::cout.flush();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+#endif
     }
 
     static void clearScreen() {

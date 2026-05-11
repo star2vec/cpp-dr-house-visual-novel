@@ -27,51 +27,93 @@ void GameEngine::showMedicalSubMenu() {
     MedicalActionFactory factory;
     const auto& allActions = factory.getAllActions();
 
-    int selectedIndex = 0;
-    bool actionChosen = false;
+    // Category labels and their corresponding action type strings
+    const std::vector<std::string> catLabels = {
+        "Run a Lab Test",
+        "Order a Treatment",
+        "Risky Procedure",
+        "Go Back"
+    };
+    const std::vector<std::string> catTypes = {
+        "Lab Test",
+        "Treatment",
+        "Risky Procedure",
+        ""
+    };
 
-    while (!actionChosen) {
-        TerminalUI::clearScreen();
-        std::cout << "\n--- [ SUB-MENU: MEDICAL INTERVENTION ] ---\n";
-        std::cout << "Patient: " << patient.getName()
-                  << " | Health: " << patient.getHealth()
-                  << " | Clarity: " << patient.getClarity() << "%"
-                  << " | Budget: $" << budget << "\n\n";
-        std::cout << "Select a procedure (UP/DOWN and ENTER):\n";
+    std::string actionName, actionType;
 
-        for (size_t i = 0; i < allActions.size(); ++i) {
-            const auto& [name, type] = allActions[i];
-            int cost = factory.getCost(name);
-            if (i == static_cast<size_t>(selectedIndex)) {
-                std::cout << "  -> \033[1;36m[" << type << "] " << name << "  ($" << cost << ")\033[0m\n";
-            } else {
-                std::cout << "     [" << type << "] " << name << "  ($" << cost << ")\n";
+    // Outer loop: return here if player hits Go Back from level 2
+    while (true) {
+        // --- Level 1: Category selection ---
+        int catIndex = 0;
+        bool catChosen = false;
+        while (!catChosen) {
+            TerminalUI::clearScreen();
+            std::cout << "\n--- [ MEDICAL INTERVENTION ] ---\n";
+            std::cout << "Patient: " << patient.getName()
+                      << "  |  Health: " << patient.getHealth()
+                      << "  |  Clarity: " << patient.getClarity() << "%"
+                      << "  |  Budget: $" << budget << "\n\n";
+            std::cout << "What is your approach?\n\n";
+            for (int i = 0; i < static_cast<int>(catLabels.size()); ++i) {
+                if (i == catIndex)
+                    std::cout << "  -> \033[1;36m" << catLabels[i] << "\033[0m\n";
+                else
+                    std::cout << "     " << catLabels[i] << "\n";
             }
+            int key = TerminalUI::getKeyPress();
+            if (key == 1) { catIndex--; if (catIndex < 0) catIndex = static_cast<int>(catLabels.size()) - 1; }
+            else if (key == 2) { catIndex++; if (catIndex >= static_cast<int>(catLabels.size())) catIndex = 0; }
+            else if (key == 3) catChosen = true;
         }
 
-        if (selectedIndex == static_cast<int>(allActions.size())) {
-            std::cout << "  -> \033[1;31mGo Back\033[0m\n";
-        } else {
-            std::cout << "     Go Back\n";
+        if (catIndex == static_cast<int>(catLabels.size()) - 1) return; // Go Back → main menu
+
+        const std::string& chosenType = catTypes[catIndex];
+
+        // Build filtered list for this category
+        std::vector<std::pair<std::string, std::string>> filtered;
+        for (const auto& [name, type] : allActions)
+            if (type == chosenType) filtered.push_back({name, type});
+
+        // --- Level 2: Action selection ---
+        int selIndex = 0;
+        bool actionChosen = false;
+        while (!actionChosen) {
+            TerminalUI::clearScreen();
+            std::cout << "\n--- [ " << catLabels[catIndex] << " ] ---\n";
+            std::cout << "Patient: " << patient.getName()
+                      << "  |  Health: " << patient.getHealth()
+                      << "  |  Clarity: " << patient.getClarity() << "%"
+                      << "  |  Budget: $" << budget << "\n\n";
+            std::cout << "Select (UP/DOWN and ENTER):\n\n";
+            for (size_t i = 0; i < filtered.size(); ++i) {
+                int cost = factory.getCost(filtered[i].first);
+                if (i == static_cast<size_t>(selIndex))
+                    std::cout << "  -> \033[1;36m" << filtered[i].first << "  ($" << cost << ")\033[0m\n";
+                else
+                    std::cout << "     " << filtered[i].first << "  ($" << cost << ")\n";
+            }
+            if (selIndex == static_cast<int>(filtered.size()))
+                std::cout << "  -> \033[1;31m<< Back to categories\033[0m\n";
+            else
+                std::cout << "     << Back to categories\n";
+
+            int key = TerminalUI::getKeyPress();
+            if (key == 1) { selIndex--; if (selIndex < 0) selIndex = static_cast<int>(filtered.size()); }
+            else if (key == 2) { selIndex++; if (selIndex > static_cast<int>(filtered.size())) selIndex = 0; }
+            else if (key == 3) actionChosen = true;
         }
 
-        int key = TerminalUI::getKeyPress();
-        if (key == 1) {
-            selectedIndex--;
-            if (selectedIndex < 0) selectedIndex = static_cast<int>(allActions.size());
-        }
-        else if (key == 2) {
-            selectedIndex++;
-            if (selectedIndex > static_cast<int>(allActions.size())) selectedIndex = 0;
-        }
-        else if (key == 3) {
-            actionChosen = true;
-        }
+        if (selIndex == static_cast<int>(filtered.size())) continue; // Back to category selection
+
+        actionName = filtered[selIndex].first;
+        actionType = filtered[selIndex].second;
+        break;
     }
 
-    if (selectedIndex == static_cast<int>(allActions.size())) return;
-
-    const auto& [actionName, actionType] = allActions[selectedIndex];
+    // --- Execute chosen action ---
     std::unique_ptr<MedicalAction> selectedAction = factory.create(actionName);
     int cost = factory.getCost(actionName);
     selectedAction->recordPerformed();
@@ -94,7 +136,7 @@ void GameEngine::showMedicalSubMenu() {
     patient.modifyMalpractice(outcome.malpracticeDelta);
     budget -= cost;
 
-    narrativeLog += outcome.narrative;
+    narrativeLog += std::string("[") + actionType + ": " + actionName + "] " + outcome.narrative;
     ActionRecord record;
     record.actionName        = actionName;
     record.actionType        = actionType;
@@ -120,11 +162,43 @@ void GameEngine::showMedicalSubMenu() {
     while(TerminalUI::getKeyPress() != 3);
 }
 
+void GameEngine::showWhiteboardMenu() {
+    TerminalUI::clearScreen();
+    std::cout << "\n";
+    std::cout << "  +------------------------------------------+\n";
+    std::cout << "  |           [ THE WHITEBOARD ]             |\n";
+    std::cout << "  +------------------------------------------+\n\n";
+    std::cout << "House uncaps the marker. His eyes fix on the board.\n";
+    std::cout << "Patient: \033[1m" << patient.getName() << "\033[0m";
+    std::cout << "  |  Symptom: " << patient.getSymptom() << "\n\n";
+    std::cout << "What's the theory burning in his skull?\n\n";
+    std::cout << "> ";
+    std::cout.flush();
+
+    std::string question;
+    std::getline(std::cin, question);
+
+    if (question.empty()) return;
+
+    std::cout << "\nHouse stares at the board. The marker squeaks.\n\n";
+
+    std::string thought = aiBrain.generateWhiteboardThought(
+        question, patient.getSymptom(), patient.getHiddenDiagnosis()
+    );
+
+    TerminalUI::typewrite(thought);
+    std::cout << "\n\n";
+
+    narrativeLog += std::string("[WHITEBOARD] ") + question;
+
+    std::cout << "(Press ENTER to return to the main room...)";
+    while (TerminalUI::getKeyPress() != 3);
+}
+
 void GameEngine::showSocialSubMenu() {
     std::vector<std::string> socialOptions = {
-        "Team Brainstorm (Chase / Cameron / Foreman)",
-        "Talk to The Team",
-        "Talk to Wilson",
+        "Team Brainstorm       (Chase / Cameron / Foreman)",
+        "Consult Wilson        (Case Sounding Board)  [+5% clarity]",
         "Talk to Cuddy",
         "Go Back"
     };
@@ -146,7 +220,7 @@ void GameEngine::showSocialSubMenu() {
         else if (key == 3) { chosen = true; }
     }
 
-    if (selectedIndex == 4) return; // Go Back
+    if (selectedIndex == 3) return; // Go Back
 
     // ── Team Brainstorm ───────────────────────────────────────────────────────
     if (selectedIndex == 0) {
@@ -173,28 +247,52 @@ void GameEngine::showSocialSubMenu() {
             TerminalUI::typewrite(opinion);
             std::cout << "\n\n";
 
+            // Log each opinion individually for the Case Board
+            narrativeLog += std::string("[BRAINSTORM: ") + agent->getName() + "] " + opinion;
+
             // Downcast: Chase's wild guess occasionally sparks something (rubric)
             if (auto* chase = dynamic_cast<ChaseAgent*>(agent.get())) {
                 if (std::rand() % 5 == 0) {
                     patient.modifyClarity(15);
                     std::cout << "\033[2m[Chase's exotic theory accidentally points somewhere useful. Clarity +15%.]\033[0m\n\n";
                 }
-                (void)chase; // suppress unused-variable warning
+                (void)chase;
             }
         }
 
-        narrativeLog += std::string("Team brainstorm on turn ") + std::to_string(turn);
         std::cout << "\n(Press ENTER to return to the main room...)";
         while (TerminalUI::getKeyPress() != 3);
         return;
     }
 
-    // ── Individual dialogue (existing behaviour) ──────────────────────────────
-    std::string characterName;
-    if (selectedIndex == 1) characterName = "The Team";
-    else if (selectedIndex == 2) characterName = "Wilson";
-    else characterName = "Cuddy";
+    // ── Wilson Consult ────────────────────────────────────────────────────────
+    if (selectedIndex == 1) {
+        TerminalUI::clearScreen();
+        std::cout << "\n=== WILSON'S OFFICE ===\n";
+        std::cout << "House limps in without knocking. Wilson looks up from his paperwork.\n\n";
+        std::cout << "  (Wilson is thinking...)\n";
+        std::cout.flush();
 
+        std::string consultation = aiBrain.generateWilsonConsult(
+            patient.getSymptom(), patient.getHiddenDiagnosis(),
+            patient.getName(), patient.getClarity()
+        );
+
+        patient.modifyClarity(5);
+        narrativeLog += std::string("[WILSON] ") + consultation;
+
+        std::cout << "\033[1;33mWilson:\033[0m ";
+        TerminalUI::typewrite(consultation);
+        std::cout << "\n\n";
+        std::cout << "Clarity: +5%  (Current: " << patient.getClarity() << "%)\n";
+
+        std::cout << "\n(Press ENTER to return to the main room...)";
+        while (TerminalUI::getKeyPress() != 3);
+        return;
+    }
+
+    // ── Cuddy dialogue ────────────────────────────────────────────────────────
+    const std::string characterName = "Cuddy";
     int maxMessages = 3;
     std::vector<std::string> chatHistory;
     std::vector<std::string> houseOptions = aiBrain.getHouseIntents(characterName);
@@ -226,7 +324,10 @@ void GameEngine::showSocialSubMenu() {
             break;
         }
 
-        DialogueResponse aiDialogue = aiBrain.generateDialogue(characterName, chatHistory, houseOptions[selectedLine]);
+        DialogueResponse aiDialogue = aiBrain.generateDialogue(
+            characterName, chatHistory, houseOptions[selectedLine],
+            patient.getName(), patient.getSymptom()
+        );
         chatHistory.push_back("House: " + aiDialogue.houseLine);
         chatHistory.push_back("[" + characterName + "]: " + aiDialogue.characterReply);
     }
@@ -289,6 +390,7 @@ void GameEngine::showMiscellaneousSubMenu() {
             patient.getHiddenDiagnosis(), patient.getName(), patient.getSymptom());
         patient.modifyClarity(15);
         patient.modifyMalpractice(20);
+        narrativeLog += std::string("[CLUE] ") + clue;
         std::cout << "\n\033[1;33m\"";
         TerminalUI::typewrite(clue);
         std::cout << "\"\033[0m\n\n";
@@ -321,10 +423,11 @@ void GameEngine::run() {
         int selectedIndex = 0;
 
         std::vector<std::string> options = {
-            "Medical Intervention (Tests & Treatment)",
-            "Social Interaction (Team / Cuddy / Wilson)",
-            "'House' Actions (Chaos)",
-            "Resign (Quit Game)"
+            "Medical Intervention   (Tests & Treatments)",
+            "Social Interaction     (Team / Cuddy / Wilson)",
+            "'House' Actions        (Chaos)",
+            "Think Out Loud         [free-text brainstorm]",
+            "Resign  (Quit Game)"
         };
 
         while (running) {
@@ -337,9 +440,30 @@ void GameEngine::run() {
             std::cout << "\n[TURN " << turn << "] \n";
             std::cout << "Health: " << patient.getHealth() << "%  |  Clarity: " << patient.getClarity() << "%  |  Malpractice: " << patient.getMalpractice() << "%  |  Budget: $" << budget << "\n";
             int riskyActions = actionLog.count([](const ActionRecord& r){ return r.malpracticeDelta > 0; });
-            std::cout << "Actions: " << actionLog.size() << "  |  Risky: " << riskyActions << "  |  Vicodin: " << vicodinLevel << "/10\n\n";
+            std::cout << "Actions: " << actionLog.size() << "  |  Risky: " << riskyActions << "  |  Vicodin: " << vicodinLevel << "/10\n";
 
-            std::cout << "What category of action do you take?\n";
+            // Urgency warnings
+            if (patient.getHealth() < 10)
+                std::cout << "\033[1;31m  !! CRITICAL: " << patient.getName() << " is crashing — this turn may be your last chance.\033[0m\n";
+            else if (patient.getHealth() < 20)
+                std::cout << "\033[1;31m  !! WARNING: Patient is deteriorating rapidly.\033[0m\n";
+            if (patient.getMalpractice() > 85)
+                std::cout << "\033[1;33m  !! WARNING: Legal is watching. One more incident and you're done.\033[0m\n";
+            else if (patient.getMalpractice() > 70)
+                std::cout << "\033[1;33m  !  CAUTION: Malpractice risk elevated — tread carefully.\033[0m\n";
+            if (budget < 3000)
+                std::cout << "\033[1;31m  !! WARNING: Budget nearly depleted. Choose carefully.\033[0m\n";
+            else if (budget < 8000)
+                std::cout << "\033[1;33m  !  CAUTION: Budget running low ($" << budget << " remaining).\033[0m\n";
+
+#ifdef DEBUG_MODE
+            std::cout << "\033[2m[DEBUG: Disease = "
+                      << patient.getHiddenDiagnosis()
+                      << " | Severity: " << patient.getDiseaseSeverity()
+                      << "]\033[0m\n";
+#endif
+
+            std::cout << "What do you do?\n";
 
             for (size_t i = 0; i < options.size(); ++i) {
                 if (i == static_cast<size_t>(selectedIndex)) {
@@ -348,6 +472,8 @@ void GameEngine::run() {
                     std::cout << "     " << options[i] << "\n";
                 }
             }
+
+            renderCaseBoard();
 
             int key = TerminalUI::getKeyPress();
 
@@ -360,6 +486,8 @@ void GameEngine::run() {
                 if (selectedIndex >= static_cast<int>(options.size())) selectedIndex = 0;
             }
             else if (key == 3) {
+                bool takeTurn = true;
+
                 if (selectedIndex == 0) {
                     showMedicalSubMenu();
                 } else if (selectedIndex == 1) {
@@ -367,31 +495,41 @@ void GameEngine::run() {
                 } else if (selectedIndex == 2) {
                     showMiscellaneousSubMenu();
                 } else if (selectedIndex == 3) {
+                    showWhiteboardMenu();
+                } else if (selectedIndex == 4) {
                     std::cout << "\nHouse limped home to watch General Hospital. GAME OVER.\n";
                     running = false;
+                    takeTurn = false;
                 }
 
-                turn++;
+                if (takeTurn) {
+                    turn++;
 
-                // Probabilistic health decay per turn
-                {
-                    int roll = std::rand() % 100;
-                    int decay = 0;
-                    if (roll < 30) {
-                        decay = 0;                                              // 30%: stabilizes
-                    } else if (roll < 40) {
-                        decay = -(15 + std::rand() % 11);                       // 10%: sudden crash -15 to -25
-                    } else {
-                        decay = -(3 + std::rand() % 5) * patient.getDiseaseSeverity(); // 60%: normal decay
+                    // Probabilistic health decay per turn
+                    {
+                        int roll = std::rand() % 100;
+                        int decay = 0;
+                        if (roll < 30) {
+                            decay = 0;                                              // 30%: stabilizes
+                        } else if (roll < 40) {
+                            decay = -(15 + std::rand() % 11);                       // 10%: sudden crash -15 to -25
+                            // Crash can't kill outright — always leaves 2-5 HP so the player
+                            // has one last turn to respond (death from inaction, not pure RNG).
+                            int floor = 2 + std::rand() % 4;
+                            if (patient.getHealth() + decay <= 0)
+                                decay = floor - patient.getHealth();
+                        } else {
+                            decay = -(1 + std::rand() % 2) * patient.getDiseaseSeverity(); // 60%: normal decay
+                        }
+                        if (decay != 0) patient.modifyHealth(decay);
                     }
-                    if (decay != 0) patient.modifyHealth(decay);
-                }
 
-                checkEndings(); // loss conditions always take priority over win
+                    checkEndings(); // loss conditions always take priority over win
 
-                if (patient.getClarity() >= 100 && patient.getHealth() > 0) {
-                    runEurekaFinale();
-                    return;
+                    if (patient.getClarity() >= 100 && patient.getHealth() > 0) {
+                        runEurekaFinale();
+                        return;
+                    }
                 }
             }
         }
@@ -411,6 +549,124 @@ void GameEngine::run() {
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
         triggerDirectorsCut(e.what());
     }
+}
+
+void GameEngine::renderCaseBoard() {
+    // Box: 76 chars total. "| " (2) + 72 content + " |" (2) = 76.
+    // All section headers use only ASCII chars to guarantee width accuracy.
+    const size_t TW = 76;
+    const size_t CW = TW - 4;  // 72 usable content chars
+
+    // Truncate at last word boundary before maxLen, appending "..." if cut.
+    auto trunc = [](const std::string& s, size_t maxLen) -> std::string {
+        if (s.size() <= maxLen) return s;
+        size_t pos = s.rfind(' ', maxLen - 3);
+        return (pos != std::string::npos && pos > maxLen / 2)
+               ? s.substr(0, pos) + "..."
+               : s.substr(0, maxLen - 3) + "...";
+    };
+    // First sentence, then trunc.
+    auto brief = [&trunc](const std::string& s, size_t maxLen) -> std::string {
+        size_t end = s.find_first_of(".!?");
+        std::string r = (end != std::string::npos && end < maxLen) ? s.substr(0, end + 1) : s;
+        return trunc(r, maxLen);
+    };
+    auto row = [&](const std::string& s) -> std::string {
+        std::string c = (s.size() > CW) ? s.substr(0, CW) : s + std::string(CW - s.size(), ' ');
+        return "| " + c + " |";
+    };
+    auto sec = [&](const std::string& title) -> std::string {
+        // Only ASCII in title — no multi-byte chars that would break width.
+        std::string h = "+--[ " + title + " ]";
+        while (h.size() < TW - 1) h += '-';
+        return h + "+";
+    };
+    std::string hline = "+" + std::string(TW - 2, '-') + "+";
+
+    auto sw = [](const std::string& s, const std::string& p) -> bool {
+        return s.size() >= p.size() && s.compare(0, p.size(), p) == 0;
+    };
+
+    // Parse the narrative log
+    std::vector<std::string> testNames;
+    std::vector<std::pair<std::string, std::string>> agentOpinions; // name -> latest opinion
+    std::vector<std::string> clues, wilsonItems;
+
+    for (const auto& entry : narrativeLog.getEntries()) {
+        if (sw(entry, "[Lab Test: ") || sw(entry, "[Treatment: ") || sw(entry, "[Risky Procedure: ")) {
+            size_t colon = entry.find(": ");
+            size_t brkt  = entry.find(']');
+            if (colon != std::string::npos && brkt != std::string::npos && colon < brkt)
+                testNames.push_back(entry.substr(colon + 2, brkt - colon - 2));
+        } else if (sw(entry, "[BRAINSTORM: ")) {
+            size_t nameEnd = entry.find(']');
+            if (nameEnd != std::string::npos && nameEnd + 2 < entry.size()) {
+                std::string name = entry.substr(13, nameEnd - 13);
+                std::string op   = entry.substr(nameEnd + 2);
+                bool found = false;
+                for (auto& kv : agentOpinions) {
+                    if (kv.first == name) { kv.second = op; found = true; break; }
+                }
+                if (!found) agentOpinions.push_back({name, op});
+            }
+        } else if (sw(entry, "[CLUE] ")) {
+            clues.push_back(entry.substr(7));
+        } else if (sw(entry, "[WILSON] ")) {
+            wilsonItems.push_back(entry.substr(9));
+        }
+    }
+
+    std::cout << "\n";
+
+    // Header — use ASCII colon, never an em dash, to keep byte count == display width
+    std::string title = "WHITEBOARD: " + patient.getName();
+    std::cout << sec(title) << "\n";
+    std::cout << row("Symptom: " + trunc(patient.getSymptom(), CW - 9)) << "\n";
+
+    // TESTS — just action names, space-efficient
+    if (!testNames.empty()) {
+        std::cout << sec("TESTS") << "\n";
+        std::string line;
+        for (size_t i = 0; i < testNames.size(); ++i) {
+            std::string sep = i == 0 ? "" : "  /  ";
+            if (!line.empty() && line.size() + sep.size() + testNames[i].size() > CW) {
+                std::cout << row(line) << "\n";
+                line = testNames[i];
+            } else {
+                line += sep + testNames[i];
+            }
+        }
+        if (!line.empty()) std::cout << row(line) << "\n";
+    }
+
+    // TEAM — one line per agent, aligned, first-sentence truncated
+    if (!agentOpinions.empty()) {
+        std::cout << sec("TEAM") << "\n";
+        for (const auto& kv : agentOpinions) {
+            std::string prefix = kv.first + ": ";
+            while (prefix.size() < 10) prefix += ' ';   // align to 10 chars
+            std::cout << row(prefix + brief(kv.second, CW - prefix.size())) << "\n";
+        }
+    }
+
+    // FIELD CLUE — break-in finds only
+    if (!clues.empty()) {
+        std::cout << sec("FIELD CLUE") << "\n";
+        for (const auto& c : clues)
+            std::cout << row(brief(c, CW)) << "\n";
+    }
+
+    // WILSON — consult questions only
+    if (!wilsonItems.empty()) {
+        std::cout << sec("WILSON") << "\n";
+        for (const auto& w : wilsonItems)
+            std::cout << row(brief(w, CW)) << "\n";
+    }
+
+    if (testNames.empty() && agentOpinions.empty() && clues.empty() && wilsonItems.empty())
+        std::cout << row("No findings yet. Run tests, consult the team, or visit the patient's home.") << "\n";
+
+    std::cout << hline << "\n";
 }
 
 // --- EUREKA FINALE ---

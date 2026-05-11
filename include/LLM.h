@@ -38,7 +38,10 @@ public:
 
     // Functiile vechi (Meniul Social)
     std::vector<std::string> getHouseIntents(const std::string& character);
-    DialogueResponse generateDialogue(const std::string& character, const std::vector<std::string>& history, const std::string& chosenIntent);
+    DialogueResponse generateDialogue(const std::string& character, const std::vector<std::string>& history,
+                                      const std::string& chosenIntent,
+                                      const std::string& patientName = "",
+                                      const std::string& symptom = "");
 
     // Functiile NOI (Meniul Medical)
     PatientBackstory generateAdmissionStory(const std::string& name, int health, const std::string& symptom);
@@ -54,6 +57,17 @@ public:
     std::string generateHouseClue(const std::string& hiddenDiagnosis,
                                   const std::string& patientName,
                                   const std::string& symptom);
+
+    // Wilson consult — lifestyle/context sounding board
+    std::string generateWilsonConsult(const std::string& symptom,
+                                      const std::string& hiddenDiagnosis,
+                                      const std::string& patientName,
+                                      int clarity);
+
+    // Whiteboard — free-text medical brainstorm
+    std::string generateWhiteboardThought(const std::string& question,
+                                          const std::string& symptom,
+                                          const std::string& hiddenDiagnosis);
 
     // Phase 7: Eureka Finale
     std::string generatePatientMonologue(const std::string& patientName,

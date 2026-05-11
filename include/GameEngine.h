@@ -1,6 +1,8 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
+#define DEBUG_MODE true   // flip to false before submission
+
 #include "Patient.h"
 #include "LLM.h"
 #include "GameLog.h"
@@ -20,6 +22,8 @@ private:
     void showMedicalSubMenu();
     void showSocialSubMenu();
     void showMiscellaneousSubMenu();
+    void showWhiteboardMenu();
+    void renderCaseBoard();
 
     void runEurekaFinale();
     void triggerDirectorsCut(const std::string& outcome);
