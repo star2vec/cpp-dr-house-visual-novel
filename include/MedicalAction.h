@@ -55,9 +55,19 @@ public:
 class RiskyProcedure : public MedicalAction {
 public:
     RiskyProcedure(std::string n) : MedicalAction(n) {}
-    
-    std::string getActionType() const override { 
-        return "Risky Procedure"; 
+
+    std::string getActionType() const override {
+        return "Risky Procedure";
+    }
+};
+
+// 4. Ingrijire Suportiva (Stabilizare simptomatica — nu vindeca, nu dauneaza)
+class SupportiveCare : public MedicalAction {
+public:
+    SupportiveCare(std::string n) : MedicalAction(std::move(n)) {}
+
+    std::string getActionType() const override {
+        return "Supportive Care";
     }
 };
 

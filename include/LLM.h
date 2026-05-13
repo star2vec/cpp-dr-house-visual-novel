@@ -56,7 +56,7 @@ public:
 
     // Functiile NOI (Meniul Medical)
     PatientBackstory generateAdmissionStory(const std::string& name, int health, const std::string& symptom);
-    MedicalOutcome evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis);
+    MedicalOutcome evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis, int diseaseSeverity = 1);
     std::vector<PatientProfile> generatePatientFiles(int count = 3);
 
     // Phase 5: Team Brainstorm (AIAgent hierarchy)

@@ -206,7 +206,7 @@ PatientBackstory LLM::generateAdmissionStory(const std::string& name, int health
     return backstory;
 }
 
-MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis) {
+MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const std::string& actionName, int currentHealth, int currentClarity, const std::string& symptom, const std::string& hiddenDiagnosis, int diseaseSeverity) {
     MedicalOutcome outcome;
 
     std::string apiKey = "";
@@ -240,9 +240,19 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
         "  Lab Test somewhat relevant: clarity +4 to +10, health 0 to -2.\n"
         "  Lab Test irrelevant: clarity 0 to +2, health 0 to -1.\n"
         "  Treatment correct: health +5 to +12, clarity +8 to +15, malpractice 0.\n"
-        "  Treatment wrong: health -12 to -20, clarity 0, malpractice +10 to +20.\n"
+        "  Treatment wrong: health -12 to -20, clarity +2 to +5, malpractice +10 to +20.\n"
+        "    (The failure is diagnostic — a wrong treatment rules out that entire mechanism. "
+        "    The narrative MUST make clear HOW the patient failed to respond, not just that they did.)\n"
         "  RiskyProcedure: always malpractice +15 to +25; if relevant clarity +15 to +25 and health -5 to -10; if not health -15 to -25.\n"
-        "Write exactly 2 sentences: "
+        "  Supportive Care (disease severity " + std::to_string(diseaseSeverity) + "/3):\n"
+        "    First judge whether this action is relevant to the VISIBLE symptom presentation (ignore hidden diagnosis — use only the symptom field above).\n"
+        "    If IRRELEVANT to visible symptoms: health 0, clarity 0, malpractice 0. Narrative: House observes the action has no discernible effect given what this patient is showing.\n"
+        "    If RELEVANT to visible symptoms, apply the severity-based range:\n"
+        "      Severity 1: health +4 to +8.  Severity 2: health +2 to +5.  Severity 3: health +1 to +3.\n"
+        "    Always: clarity 0, malpractice 0. CRITICAL: health_change MUST be >= 0. Supportive Care NEVER harms.\n"
+        "    Sentence 1: specific observable improvement (vital sign, pain level, oxygenation).\n"
+        "    Sentence 2: House's sardonic remark that this buys time but solves nothing. At severity 3 make clear the patient is still declining.\n"
+        "Write exactly 2 sentences for the narrative. "
         "Sentence 1 — a plain clinical observation accessible to any reader (what was measured, found, or seen: "
         "lab values, scan descriptions, physical signs, test results — no jargon). "
         "Sentence 2 — House's interpretation: mechanisms, body systems, what this means for the case, "

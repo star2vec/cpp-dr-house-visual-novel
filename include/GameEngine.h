@@ -1,7 +1,7 @@
 #ifndef GAME_ENGINE_H
 #define GAME_ENGINE_H
 
-#define DEBUG_MODE true   // flip to false before submission
+#define DEBUG_MODE false  // flip to true to reveal hidden diagnosis
 
 #include "Patient.h"
 #include "LLM.h"
@@ -23,7 +23,7 @@ private:
     void showSocialSubMenu();
     void showMiscellaneousSubMenu();
     void showWhiteboardMenu();
-    void renderCaseBoard();
+    void renderCaseBoard(bool expanded = false);
 
     void runEurekaFinale();
     void triggerDirectorsCut(const std::string& outcome);

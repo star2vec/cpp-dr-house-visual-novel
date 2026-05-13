@@ -32,12 +32,14 @@ void GameEngine::showMedicalSubMenu() {
     const std::vector<std::string> catLabels = {
         "Run a Lab Test",
         "Order a Treatment",
+        "Supportive Care          (stabilize, buy time)",
         "Risky Procedure",
         "Go Back"
     };
     const std::vector<std::string> catTypes = {
         "Lab Test",
         "Treatment",
+        "Supportive Care",
         "Risky Procedure",
         ""
     };
@@ -133,7 +135,8 @@ void GameEngine::showMedicalSubMenu() {
         patient.getHealth(),
         patient.getClarity(),
         patient.getSymptom(),
-        patient.getHiddenDiagnosis()
+        patient.getHiddenDiagnosis(),
+        patient.getDiseaseSeverity()
     );
 
     patient.modifyHealth(outcome.healthDelta);
@@ -428,6 +431,7 @@ void GameEngine::run() {
         // INTRAM IN JOC
         bool running = true;
         int selectedIndex = 0;
+        bool boardExpanded = false;
 
         std::vector<std::string> options = {
             "Medical Intervention   (Tests & Treatments)",
@@ -436,6 +440,7 @@ void GameEngine::run() {
             "Think Out Loud         [free-text brainstorm]",
             "Resign  (Quit Game)"
         };
+        // Index 5 is a virtual non-turn item rendered separately after the main list.
 
         while (running) {
             TerminalUI::clearScreen();
@@ -463,7 +468,7 @@ void GameEngine::run() {
             else if (budget < 8000)
                 std::cout << "\033[1;33m  !  CAUTION: Budget running low ($" << budget << " remaining).\033[0m\n";
 
-#ifdef DEBUG_MODE
+#if DEBUG_MODE
             std::cout << "\033[2m[DEBUG: Disease = "
                       << patient.getHiddenDiagnosis()
                       << " | Severity: " << patient.getDiseaseSeverity()
@@ -479,18 +484,23 @@ void GameEngine::run() {
                     std::cout << "     " << options[i] << "\n";
                 }
             }
+            // Virtual 6th item — expands/collapses board clues, no turn cost.
+            if (selectedIndex == 5)
+                std::cout << "  -> \033[2;36m" << (boardExpanded ? "[-] Collapse board" : "[+] Expand board clues") << "\033[0m\n";
+            else
+                std::cout << "  \033[2m   " << (boardExpanded ? "[-] Collapse board" : "[+] Expand board clues") << "\033[0m\n";
 
-            renderCaseBoard();
+            renderCaseBoard(boardExpanded);
 
             int key = TerminalUI::getKeyPress();
 
             if (key == 1) {
                 selectedIndex--;
-                if (selectedIndex < 0) selectedIndex = static_cast<int>(options.size()) - 1;
+                if (selectedIndex < 0) selectedIndex = 5;
             }
             else if (key == 2) {
                 selectedIndex++;
-                if (selectedIndex >= static_cast<int>(options.size())) selectedIndex = 0;
+                if (selectedIndex > 5) selectedIndex = 0;
             }
             else if (key == 3) {
                 bool takeTurn = true;
@@ -506,6 +516,9 @@ void GameEngine::run() {
                 } else if (selectedIndex == 4) {
                     std::cout << "\nHouse limped home to watch General Hospital. GAME OVER.\n";
                     running = false;
+                    takeTurn = false;
+                } else if (selectedIndex == 5) {
+                    boardExpanded = !boardExpanded;
                     takeTurn = false;
                 }
 
@@ -555,7 +568,7 @@ void GameEngine::run() {
     }
 }
 
-void GameEngine::renderCaseBoard() {
+void GameEngine::renderCaseBoard(bool expanded) {
     // Box: 76 chars total. "| " (2) + 72 content + " |" (2) = 76.
     // All section headers use only ASCII chars to guarantee width accuracy.
     const size_t TW = 76;
@@ -589,6 +602,21 @@ void GameEngine::renderCaseBoard() {
 
     auto sw = [](const std::string& s, const std::string& p) -> bool {
         return s.size() >= p.size() && s.compare(0, p.size(), p) == 0;
+    };
+
+    // Word-wrap a string into lines of at most CW chars (used in expanded mode).
+    auto wrapLines = [&](const std::string& s) -> std::vector<std::string> {
+        std::vector<std::string> lines;
+        std::string rem = s;
+        while (!rem.empty()) {
+            if (rem.size() <= CW) { lines.push_back(rem); break; }
+            size_t pos = rem.rfind(' ', CW);
+            if (pos == std::string::npos || pos < CW / 2) pos = CW;
+            lines.push_back(rem.substr(0, pos));
+            size_t skip = (pos < rem.size() && rem[pos] == ' ') ? 1u : 0u;
+            rem = rem.substr(pos + skip);
+        }
+        return lines;
     };
 
     // Tests come from actionLog (have name + LLM-generated brief)
@@ -647,20 +675,38 @@ void GameEngine::renderCaseBoard() {
 
     // FIELD CLUE — break-in finds only
     if (!clues.empty()) {
-        std::cout << sec("FIELD CLUE") << "\n";
-        for (const auto& c : clues)
-            std::cout << row(brief(c, CW)) << "\n";
+        std::cout << sec(expanded ? "FIELD CLUE  [ expanded ]" : "FIELD CLUE") << "\n";
+        for (const auto& c : clues) {
+            if (expanded) {
+                for (const auto& line : wrapLines(c))
+                    std::cout << row(line) << "\n";
+            } else {
+                std::cout << row(brief(c, CW)) << "\n";
+            }
+        }
     }
 
     // WILSON — brief of what he probed
     if (!wilsonItems.empty()) {
-        std::cout << sec("WILSON") << "\n";
-        for (const auto& w : wilsonItems)
-            std::cout << row(trunc(w, CW)) << "\n";
+        std::cout << sec(expanded ? "WILSON  [ expanded ]" : "WILSON") << "\n";
+        for (const auto& w : wilsonItems) {
+            if (expanded) {
+                for (const auto& line : wrapLines(w))
+                    std::cout << row(line) << "\n";
+            } else {
+                std::cout << row(trunc(w, CW)) << "\n";
+            }
+        }
     }
 
-    if (testEntries.empty() && agentBriefs.empty() && clues.empty() && wilsonItems.empty())
-        std::cout << row("No findings yet. Run tests, consult the team, or visit the patient's home.") << "\n";
+    if (testEntries.empty() && agentBriefs.empty() && clues.empty() && wilsonItems.empty()) {
+        std::string sev = (patient.getDiseaseSeverity() == 3) ? "CRITICAL" :
+                          (patient.getDiseaseSeverity() == 2) ? "moderate" : "mild";
+        std::string status = "Admitted: " + patient.getName() + "  |  Health " +
+                             std::to_string(patient.getHealth()) + "/100  |  Severity: " + sev +
+                             "  |  No findings yet.";
+        std::cout << row(trunc(status, CW)) << "\n";
+    }
 
     std::cout << hline << "\n";
 }

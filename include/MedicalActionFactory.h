@@ -56,6 +56,15 @@ public:
         reg("Experimental Drug",              "Risky Procedure",10000);
         reg("Brain Biopsy",                   "Risky Procedure",15000);
         reg("Emergency Surgery",              "Risky Procedure",25000);
+        // Supportive Care — symptomatic stabilization, never curative
+        reg("IV Fluid Resuscitation",         "Supportive Care",  150);
+        reg("Supplemental Oxygen",            "Supportive Care",  100);
+        reg("Pain Management",                "Supportive Care",  200);
+        reg("Fever Reduction",                "Supportive Care",  100);
+        reg("Anti-nausea Medication",         "Supportive Care",  150);
+        reg("Electrolyte Correction",         "Supportive Care",  250);
+        reg("Blood Transfusion",              "Supportive Care",  800);
+        reg("Nutritional Support / TPN",      "Supportive Care",  600);
     }
 
     std::unique_ptr<MedicalAction> create(const std::string& name) const {
@@ -64,6 +73,7 @@ public:
                 if (type == "Lab Test")        return std::make_unique<LabTest>(name);
                 if (type == "Treatment")       return std::make_unique<Treatment>(name);
                 if (type == "Risky Procedure") return std::make_unique<RiskyProcedure>(name);
+                if (type == "Supportive Care") return std::make_unique<SupportiveCare>(name);
             }
         }
         return nullptr;
