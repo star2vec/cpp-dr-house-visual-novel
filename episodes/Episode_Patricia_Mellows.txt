@@ -1,0 +1,158 @@
+HOUSE M.D. — "Patricia Mellows"
+============================================================
+
+# HOUSE M.D. — "STORAGE UNIT"
+
+**TEASER**
+
+INT. PRINCETON-PLAINSBORO TEACHING HOSPITAL — PATIENT ROOM — DAY
+
+PATRICIA MELLOWS (early 30s, formerly athletic, now visibly struggling) sits upright in bed. Her eyes dart involuntarily—quick, jerky movements she can't control. A glass of water sits untouched on the bedside table.
+
+NURSE enters, checks vitals.
+
+**NURSE**
+How are you feeling today, Patricia?
+
+**PATRICIA**
+(voice slightly slurred)
+My legs... they're not doing what I tell them to. And my eyes won't stop moving.
+
+Patricia reaches for the water. Her hand trembles. She lifts the glass. Attempts to drink. Water dribbles down her chin. She coughs violently.
+
+**NURSE**
+(concerned)
+I'll get the doctor.
+
+---
+
+**ACT ONE**
+
+INT. DIAGNOSTIC CONFERENCE ROOM — CONTINUOUS
+
+HOUSE sits at the head of the table, leg propped on a chair. CAMERON, CHASE, and FOREMAN stand around the whiteboard covered in differential diagnoses, all crossed out.
+
+**HOUSE**
+Okay, let's review our greatest hits: not MS, not ALS, not myasthenia gravis. Nerves are normal. Spinal fluid is clean. Brain's angry but we don't know why.
+
+**FOREMAN**
+The blood work shows elevated acid phosphatase and chitotriosidase. That's storage markers.
+
+**HOUSE**
+Storage. Right. Like her cells are little hoarders who forgot to take out the trash.
+
+**CAMERON**
+Family history?
+(pause)
+Did anyone actually ask about family history?
+
+HOUSE stands abruptly, grabs his cane.
+
+**HOUSE**
+Chase, you still think mitochondrial?
+
+**CHASE**
+The progressive decline, the eye movements, the dysphagia—it fits.
+
+**HOUSE**
+It fits a lot of things. That's the problem.
+
+He limps toward the door.
+
+**HOUSE** (CONT'D)
+Get a genetic panel. And someone talk to the family.
+
+---
+
+INT. PATIENT ROOM — LATER
+
+HOUSE enters. PATRICIA's eyes are still moving. She looks terrified.
+
+**HOUSE**
+Your brain's been playing storage unit with things it should've thrown away—and now the whole warehouse is backing up.
+
+**PATRICIA**
+What do you mean?
+
+**HOUSE**
+You're confused—look, never mind that. What I want to know is why your brain seems to be filing things away in the wrong drawer: you walk like your legs forgot how to talk to your cerebellum, your eyes won't track smoothly, and somewhere in that noggin of yours, lipids are piling up like a hoarder's garage because your cells can't move them out.
+
+**PATRICIA**
+That doesn't make sense.
+
+**HOUSE**
+Yeah, well, neurology rarely does—but here's what does: your liver's enlarged, you're suddenly clumsy, and your eyes are doing that weird vertical gaze thing like they're stuck in an elevator. Something's jamming up the machinery at the cellular level, and I'm betting it's not just bad luck.
+
+**PATRICIA**
+My heart?
+
+**HOUSE**
+Your heart's fine—forget about it. What matters is that your neurons are drowning in their own waste because something's broken in how your cells are supposed to clean house, and it's spreading to your brain like a backed-up sewer system.
+
+**PATRICIA**
+Is it serious?
+
+**HOUSE**
+Yeah, it's serious—but here's the thing: you've got Niemann-Pick disease type C, which means your cells can't move cholesterol out of their lysosomes properly. The diagnostic clue we missed until now? That vertical supranuclear gaze palsy—your eyes won't look up or down on command because the neurons controlling that movement are already drowning in lipid buildup. Everything else—the ataxia, the liver enlargement, the cognitive decline—it all traces back to that one cellular traffic jam.
+
+Patricia's eyes continue their involuntary dance. Understanding and fear wash across her face simultaneously.
+
+**PATRICIA**
+Can you fix it?
+
+HOUSE pauses. He doesn't answer. He turns and limps out, leaving the question hanging.
+
+---
+
+**WE ARE NOW THE PATIENT**
+
+INT. PATRICIA'S MIND — CONTINUOUS
+
+*PATRICIA MELLOWS thinks:*
+
+*I don't understand why my legs feel so heavy, like they're not listening to what I'm telling them to do anymore. The room smells sharp and clean in a way that makes everything feel too real and frightening all at once. My eyes keep jumping around on their own, and I can't seem to make them focus on anything—it's making me dizzy and more scared. When I tried to drink some water earlier, it went down wrong somehow, and now I'm afraid to even swallow because I don't know what my own body is going to do next.*
+
+---
+
+**END OF EPISODE**
+
+============================================================
+[ Game log summary ]
+PATIENT: Patricia Mellows
+OUTCOME: WIN — Diagnosis revealed: Niemann-Pick disease type C
+TURNS PLAYED: 14
+
+=== NARRATIVE LOG ===
+  [Lab Test: Blood Panel] The blood panel reveals elevated acid phosphatase and chitotriosidase levels, along with mildly elevated transaminases; lipid profile shows accumulation of cholesterol and sphingolipids in serum. House narrows his eyes: 'We're looking at a storage problem—something's piling up in the cells and leaking into the bloodstream. The eye movements, the swallowing trouble, the leg weakness—that's all CNS and brainstem involvement. This isn't an infection, it's not autoimmune, and it's definitely not something antibiotics will touch.
+  [BRAINSTORM: Chase] House, I'm thinking we're looking at a mitochondrial cytopathy—specifically, progressive external ophthalmoplegia with proximal myopathy. The triad of descending motor weakness, nystagmus, and dysphagia screams energy metabolism failure. We should run muscle biopsy for ragged-red fibers and get a full mitochondrial genetic panel. The progressive nature and multi-system involvement fit the profile perfectly.
+  [BRAINSTORM_BRIEF: Chase] suspects mitochondrial cytopathy, recommends muscle biopsy
+  [BRAINSTORM: Cameron] House, we're looking at progressive neurological decline with oculomotor involvement and bulbar dysfunction. The combination screams central nervous system storage or accumulation disorder—something that's been quietly building in the cells. We need to push on family history and whether there's any psychiatric component we're missing. These patients often have emotional or behavioral changes before the motor symptoms become obvious.
+  [BRAINSTORM_BRIEF: Cameron] Suspect progressive neuronal storage disease, recommend genetic screening
+  [BRAINSTORM: Foreman] We're looking at progressive neurological decline with motor and oculomotor involvement—that's CNS, House. Before we chase some rare zebra, we need to rule out MS, ALS, and myasthenia gravis. The dysphagia plus ataxic eye movements suggests brainstem or cerebellar pathology, but the leg weakness is pointing lower motor neuron. Standard workup: MRI brain and spine, EMG, and antibody panels. We're not doing anything exotic until we've exhausted the common stuff.
+  [BRAINSTORM_BRIEF: Foreman] Suspects motor neuron disease, needs EMG and imaging
+  [Lab Test: Nerve Conduction Study] The nerve conduction study shows normal motor and sensory velocities in the legs, ruling out primary peripheral neuropathy or demyelination. House leans back: 'Normal nerves, progressive weakness, nystagmus, and dysphagia—we're not looking at a motor neuron problem or a peripheral issue. This points upstream: something's poisoning the neurons from the inside, probably metabolic or storage-related.
+  [Lab Test: EEG] The EEG shows diffuse slowing with theta-range activity and occasional sharp waves, consistent with subcortical and brainstem involvement rather than primary cortical pathology. House leans back: 'Abnormal, sure—but this just confirms his brain is angry, not *why*. Could be a dozen things causing neuronal misfiring from the inside out. We're still fishing in the dark.
+  [Lab Test: Genetic Panel] The genetic panel returns within 24 hours, revealing mutations in the NPC1 gene associated with progressive neurological storage disease—a rare lipid metabolism disorder causing cellular cholesterol accumulation. House leans back and mutters, 'So the kid's cells are drowning in their own grease, which explains the tremors, the nystagmus, and why swallowing's becoming a death trap—but knowing the genetic culprit doesn't reverse what's already rotting in his cerebellum and brainstem.
+  [Supportive Care: IV Fluid Resuscitation] The IV fluids stabilize the patient's blood pressure and improve urine output, but the progressive neurological decline—worsening ataxia, nystagmus, and dysphagia—continues unabated despite adequate hydration. House notes that keeping the pipes full buys us time, but we're still watching a patient's cerebellum and brainstem systematically malfunction while we hand out saline.
+  [Lab Test: Lumbar Puncture] The lumbar puncture yields clear cerebrospinal fluid with normal protein and glucose levels, and no evidence of infection or inflammation. House leans back: 'Clean spinal fluid rules out meningitis, encephalitis, and bacterial nonsense—but it doesn't explain why his eyes won't stop moving and his legs are turning to jelly. We're looking at something the CNS is doing to itself, not fighting off invaders.
+  [Supportive Care: Nutritional Support / TPN] TPN infusion stabilizes the patient's albumin and prealbumin levels, halting further weight loss and providing adequate caloric support to prevent aspiration pneumonia from worsening dysphagia. House leans against the whiteboard: 'Feeding tubes don't fix broken neurons, but at least we're not watching him starve while his brain falls apart—buys us time to figure out what's actually killing his cerebellum and basal ganglia.
+  [Treatment: Enzyme Replacement Therapy] The enzyme replacement infusion is administered, but over the next six hours the patient shows no improvement in muscle strength, swallowing remains severely compromised, and the nystagmus persists unchanged—vital signs stable but clinically silent. House leans against the doorframe: 'Enzyme replacement works when the problem is a missing enzyme. This patient's cells can't process what they're given. We're pouring water into a bucket with a hole in the bottom.
+  [EUREKA — PATIENT PERSPECTIVE] Patricia Mellows thinks: # Hospital Room
+
+I don't understand why my legs feel so heavy, like they're not listening to what I'm telling them to do anymore. The room smells sharp and clean in a way that makes everything feel too real and frightening all at once. My eyes keep jumping around on their own, and I can't seem to make them focus on anything—it's making me dizzy and more scared. When I tried to drink some water earlier, it went down wrong somehow, and now I'm afraid to even swallow because I don't know what my own body is going to do next.
+  [EUREKA — HOUSE ENTERS] House: "Your brain's been playing storage unit with things it should've thrown away—and now the whole warehouse is backing up.
+  [EUREKA — ROUND 1/4] Patient: "What do you mean?" | House: "Yeah, yeah, you're confused—look, never mind that. What I want to know is why your brain seems to be filing things away in the wrong drawer: you walk like your legs forgot how to talk to your cerebellum, your eyes won't track smoothly, and somewhere in that noggin of yours, lipids are piling up like a hoarder's garage because your cells can't move them out."
+  [EUREKA — ROUND 2/4] Patient: "That doesn't make sense." | House: "Yeah, well, neurology rarely does—but here's what does: your liver's enlarged, you're suddenly clumsy, and your eyes are doing that weird vertical gaze thing like they're stuck in an elevator. Something's jamming up the machinery at the cellular level, and I'm betting it's not just bad luck."
+  [EUREKA — ROUND 3/4] Patient: "My heart?" | House: "Your heart's fine—forget about it. What matters is that your neurons are drowning in their own waste because something's broken in how your cells are supposed to clean house, and it's spreading to your brain like a backed-up sewer system."
+  [EUREKA — ROUND 4/4] Patient: "Is it serious?" | House: "Yeah, it's serious—but here's the thing: you've got Niemann-Pick disease type C, which means your cells can't move cholesterol out of their lysosomes properly. The diagnostic clue we missed until now? That vertical supranuclear gaze palsy—your eyes won't look up or down on command because the neurons controlling that movement are already drowning in lipid buildup. Everything else—the ataxia, the liver enlargement, the cognitive decline—it all traces back to that one cellular traffic jam."
+  [EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: Niemann-Pick disease type C
+
+=== ACTION LOG ===
+  [Lab Test] Blood Panel | HP:-1 CLR:+16% MAL:+0% $-300
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+14% MAL:+0% $-700
+  [Lab Test] EEG | HP:-2 CLR:+8% MAL:+0% $-600
+  [Lab Test] Genetic Panel | HP:-1 CLR:+18% MAL:+0% $-3000
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] Lumbar Puncture | HP:-2 CLR:+8% MAL:+0% $-800
+  [Supportive Care] Nutritional Support / TPN | HP:+3 CLR:+0% MAL:+0% $-600
+  [Treatment] Enzyme Replacement Therapy | HP:-15 CLR:+3% MAL:+16% $-4000

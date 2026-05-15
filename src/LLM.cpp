@@ -1,5 +1,8 @@
 #include "LLM.h"
 #include <iostream>
+#include <algorithm>
+#include <random>
+#include <ctime>
 
 #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "external/httplib.h"
@@ -224,7 +227,7 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
         "Do NOT wrap the JSON in markdown blocks. Output absolutely NOTHING else.\n"
         "[GAME MASTER SECRET — NOT SHOWN TO PLAYER]: The patient's true diagnosis is: " + hiddenDiagnosis + ". "
         "Use this to judge whether the action is medically appropriate. "
-        "Wrong treatments should cause health_change to be very negative and malpractice_change to be high. "
+        "For treatments, distinguish between plausibly wrong (reasonable guess, mild harm) and contraindicated (actively harmful). "
         "CRITICAL: NEVER write the diagnosis name in the narrative — not even partially. "
         "Describe only lab findings, physiological effects, organ involvement, and House's clinical observations. "
         "The player must never learn the disease name from this text.";
@@ -239,10 +242,18 @@ MedicalOutcome LLM::evaluateMedicalAction(const std::string& actionType, const s
         "  Lab Test highly relevant: clarity +12 to +20, health 0 to -3.\n"
         "  Lab Test somewhat relevant: clarity +4 to +10, health 0 to -2.\n"
         "  Lab Test irrelevant: clarity 0 to +2, health 0 to -1.\n"
-        "  Treatment correct: health +5 to +12, clarity +8 to +15, malpractice 0.\n"
-        "  Treatment wrong: health -12 to -20, clarity +2 to +5, malpractice +10 to +20.\n"
-        "    (The failure is diagnostic — a wrong treatment rules out that entire mechanism. "
-        "    The narrative MUST make clear HOW the patient failed to respond, not just that they did.)\n"
+        "  Treatment — pick exactly one of three tiers based on the hidden diagnosis:\n"
+        "    CORRECT (treatment directly targets the hidden diagnosis or its core mechanism):\n"
+        "      health +5 to +12, clarity +8 to +15, malpractice 0.\n"
+        "    PLAUSIBLE_WRONG (wrong diagnosis but a defensible guess — treats a related symptom\n"
+        "      or adjacent mechanism without addressing root cause):\n"
+        "      health -3 to -8, clarity +3 to +7, malpractice +3 to +10.\n"
+        "      Narrative: patient shows partial, superficial, or temporary response — something moved,\n"
+        "      but the underlying mechanism is untouched.\n"
+        "    CONTRAINDICATED (wrong drug class, actively worsens the disease mechanism,\n"
+        "      or immunologically dangerous given the hidden diagnosis):\n"
+        "      health -15 to -25, clarity +1 to +3, malpractice +15 to +25.\n"
+        "      Narrative: make clear HOW the patient deteriorated — which system, which sign worsened.\n"
         "  RiskyProcedure: always malpractice +15 to +25; if relevant clarity +15 to +25 and health -5 to -10; if not health -15 to -25.\n"
         "  Supportive Care (disease severity " + std::to_string(diseaseSeverity) + "/3):\n"
         "    First judge whether this action is relevant to the VISIBLE symptom presentation (ignore hidden diagnosis — use only the symptom field above).\n"
@@ -316,31 +327,65 @@ std::vector<PatientProfile> LLM::generatePatientFiles(int count) {
         apiKey = secrets.value("ANTHROPIC_API_KEY", "");
     }
 
+    // Pick `count` disease categories from a shuffled pool — guarantees variety across
+    // patients and across runs. Each category forces a completely different body-system cluster.
+    static const std::vector<std::string> allCategories = {
+        "lysosomal or peroxisomal storage disorder (NOT Niemann-Pick or Gaucher — pick a rare variant)",
+        "mitochondrial disease or oxidative phosphorylation defect",
+        "ion channelopathy or neuromuscular junction disease (e.g. Lambert-Eaton, Brody, Isaac's syndrome)",
+        "systemic vasculitis or granulomatous disease (NOT Wegener's/GPA — pick an unusual variant)",
+        "paraneoplastic syndrome (cancer-induced neurological or endocrine effect)",
+        "heavy metal or environmental toxin accumulation (thallium, arsenic, manganese, beryllium, etc.)",
+        "hereditary periodic fever or autoinflammatory syndrome",
+        "prion or slow-virus neurological disease",
+        "rare coagulation or platelet disorder (NOT hemophilia or vWD)",
+        "endocrine-secreting tumor causing systemic chaos (VIPoma, glucagonoma, somatostatinoma, etc.)",
+        "rare nutritional deficiency causing multi-organ failure",
+        "eosinophilic organ infiltration or hypereosinophilic syndrome",
+        "hereditary connective tissue disorder affecting unexpected organs (NOT classic EDS)",
+        "unusual infectious disease (rare parasite, atypical intracellular bacteria, endemic dimorphic fungus)",
+        "complement system defect or rare primary immunodeficiency"
+    };
+
+    std::vector<std::string> categories = allCategories;
+    std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
+    std::shuffle(categories.begin(), categories.end(), rng);
+
+    // Build per-case category constraints
+    std::string categoryConstraints;
+    for (int i = 0; i < count && i < (int)categories.size(); ++i)
+        categoryConstraints += "  Case " + std::to_string(i + 1) +
+                               " MUST be a disease from this category: \"" + categories[i] + "\"\n";
+
     std::string systemPrompt =
         "You are Dr. House's diagnostic department coordinator. You MUST return strictly a JSON ARRAY of objects. "
         "Do NOT wrap the JSON in markdown blocks (no ```json). Output ONLY the raw array [ { ... }, { ... } ].";
 
     std::string userPrompt =
-        "Generate " + std::to_string(count) + " unique, bizarre medical cases for Dr. House. "
+        "Generate " + std::to_string(count) + " unique, bizarre medical cases for Dr. House.\n"
+        "CATEGORY ASSIGNMENTS (mandatory — each case must belong to its assigned category):\n"
+        + categoryConstraints +
         "Each object in the array MUST have EXACTLY these keys: "
         "'name' (string), "
         "'health' (integer between 30 and 80), "
-        "'symptom' (string — 2-3 symptoms that are clinically plausible for the hidden_diagnosis "
-        "but non-specific enough to be confusing: realistic, but not diagnostic on their own), "
+        "'symptom' (string — 2-3 symptoms clinically plausible for the hidden_diagnosis but non-specific and confusing. "
+        "CRITICAL: the symptom cluster MUST span at least 2 different body systems, e.g. neurological + hepatic, "
+        "cardiac + dermatological, renal + neuromuscular. Single-organ presentations are forbidden.), "
         "'story' (string — 2-sentence cynical backstory, no diagnosis named), "
-        "'hidden_diagnosis' (string — the ONE real disease name, must be a genuine obscure medical condition), "
-        "'disease_severity' (integer — 1 for mild, 2 for moderate, 3 for critical/aggressive). "
-        "Derive the symptom FROM the hidden_diagnosis — they must be medically consistent. "
-        "The 'symptom' and 'story' fields must NOT name the hidden_diagnosis. Keep it cryptic. "
-        "AVOID overused rare diseases: Wilson's Disease, Lupus, Cushing's Syndrome, Addison's Disease, "
-        "Marfan Syndrome, Huntington's Disease. Pick genuinely obscure conditions a non-specialist would not immediately recognise.";
+        "'hidden_diagnosis' (string — the ONE real disease name, a genuine specific obscure condition within the assigned category), "
+        "'disease_severity' (integer — 1 mild, 2 moderate, 3 critical). "
+        "Derive the symptom FROM the hidden_diagnosis — medically consistent but not diagnostic on their own. "
+        "The 'symptom' and 'story' fields must NOT name the hidden_diagnosis. "
+        "AVOID: Wilson's Disease, Lupus, Cushing's, Addison's, Marfan, Huntington's, "
+        "Acute Intermittent Porphyria, MCAS, Niemann-Pick type C, Gaucher, Wegener's/GPA, Classic EDS. "
+        "Pick conditions a specialist might recognise but a general audience would never guess.";
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
         {"max_tokens", 1024},
         {"system", systemPrompt},
         {"messages", {{{"role", "user"}, {"content", userPrompt}}}},
-        {"temperature", 0.8}
+        {"temperature", 1.0}
     };
 
     httplib::Client cli("https://api.anthropic.com");
@@ -712,11 +757,11 @@ std::string LLM::generatePatientMonologue(const std::string& patientName,
     return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
 }
 
-std::string LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
-                                         const std::string& patientName,
-                                         const std::string& patientComment,
-                                         int round,
-                                         const std::vector<std::string>& history) {
+EurekaRoundResult LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
+                                               const std::string& patientName,
+                                               const std::string& patientComment,
+                                               int round,
+                                               const std::vector<std::string>& history) {
     std::string apiKey;
     std::ifstream secretFile("secrets.json");
     if (secretFile.is_open()) {
@@ -724,26 +769,54 @@ std::string LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
         apiKey = secrets.value("ANTHROPIC_API_KEY", "");
     }
 
+    // All rounds return JSON: {"house_line": "...", "patient_options": ["...", "...", "..."]}
+    // Round 3 returns empty patient_options (final reveal, no next round).
     std::string systemPrompt;
     if (round == 0) {
         systemPrompt =
-            "You are Dr. House who has just solved a diagnosis. You enter the patient's room. "
-            "Give ONE dramatic opening line — cryptic, sarcastic, relentless. One sentence only. "
-            "Do NOT name the diagnosis. The true diagnosis is " + hiddenDiagnosis +
-            " — let it subtly colour your words.";
-    } else {
+            "You are Dr. House who has just solved a difficult medical mystery. You enter the patient's room.\n"
+            "Write ONE cryptic, sarcastic opening line — don't name the diagnosis, but let it subtly colour your words.\n"
+            "True diagnosis: " + hiddenDiagnosis + "\n\n"
+            "Also generate 3 short patient response options the player can choose (each under 10 words).\n"
+            "Range: one confused, one scared/emotional, one deflecting.\n\n"
+            "Respond ONLY with valid JSON, no extra text:\n"
+            "{\"house_line\": \"...\", \"patient_options\": [\"...\", \"...\", \"...\"]}";
+    } else if (round == 1) {
         systemPrompt =
-            "You are Dr. House explaining a breakthrough diagnosis to " + patientName + ".\n"
-            "Round " + std::to_string(round) + " of 4. Do NOT name the diagnosis before round 4.\n"
-            "Rounds 1-2: cryptic lifestyle observations hinting at " + hiddenDiagnosis + ".\n"
-            "Round 3: hint at a specific body system or mechanism.\n"
-            "Round 4: name " + hiddenDiagnosis + " explicitly, explain the key diagnostic clue.\n"
-            "Patient just said: '" + patientComment + "'. Acknowledge in one dismissive clause,\n"
-            "then barrel forward with your own thought. Voice: brilliant, sarcastic, relentless.\n"
-            "Keep your response to 2-3 sentences maximum.";
+            "You are Dr. House. Round 1 of 3 in a diagnosis reveal scene with " + patientName + ".\n"
+            "True diagnosis: " + hiddenDiagnosis + " — do NOT name it yet.\n"
+            "Make a cryptic observation about a lifestyle detail, environmental clue, or physical finding.\n"
+            "It should seem off-topic but will make sense in hindsight. Dismiss the patient's comment in\n"
+            "one clause, then barrel forward. 2-3 sentences. Voice: brilliant, sarcastic, relentless.\n\n"
+            "Also generate 3 patient response options for round 2 (under 10 words each).\n"
+            "Range: confused, pushing back, asking a specific question.\n\n"
+            "Patient said: '" + patientComment + "'\n\n"
+            "Respond ONLY with valid JSON:\n"
+            "{\"house_line\": \"...\", \"patient_options\": [\"...\", \"...\", \"...\"]}";
+    } else if (round == 2) {
+        systemPrompt =
+            "You are Dr. House. Round 2 of 3. The diagnosis is almost here.\n"
+            "True diagnosis: " + hiddenDiagnosis + " — do NOT name it yet.\n"
+            "Point at the specific body system, enzyme, or pathological mechanism central to this disease.\n"
+            "Make it feel like the last piece clicking — specific, not vague. 2-3 sentences.\n\n"
+            "Also generate 3 patient response options for round 3 (under 10 words each).\n"
+            "Range: scared but starting to grasp it, asking if it's treatable, practical/direct.\n\n"
+            "Patient said: '" + patientComment + "'\n\n"
+            "Respond ONLY with valid JSON:\n"
+            "{\"house_line\": \"...\", \"patient_options\": [\"...\", \"...\", \"...\"]}";
+    } else {
+        // round == 3: full reveal
+        systemPrompt =
+            "You are Dr. House. Round 3 of 3. THIS IS THE FULL REVEAL.\n"
+            "Name '" + hiddenDiagnosis + "' explicitly.\n"
+            "Explain the single most important diagnostic clue that cracked the case.\n"
+            "Be definitive, not cryptic. 2-3 sentences. Voice: certain, direct, still very House.\n\n"
+            "Patient said: '" + patientComment + "'\n\n"
+            "Respond ONLY with valid JSON:\n"
+            "{\"house_line\": \"...\", \"patient_options\": []}";
     }
 
-    // Build message history: history alternates [userComment, assistantResponse, ...]
+    // Build message history
     json messagesArray = json::array();
     for (size_t i = 0; i + 1 < history.size(); i += 2) {
         messagesArray.push_back({{"role", "user"},      {"content", history[i]}});
@@ -754,7 +827,7 @@ std::string LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
 
     json requestBody = {
         {"model", "claude-haiku-4-5-20251001"},
-        {"max_tokens", 300},
+        {"max_tokens", 350},
         {"system", systemPrompt},
         {"messages", messagesArray},
         {"temperature", 0.9}
@@ -771,15 +844,37 @@ std::string LLM::generateEurekaDialogue(const std::string& hiddenDiagnosis,
 
     auto res = cli.Post("/v1/messages", headers, requestBody.dump(), "application/json");
 
+    EurekaRoundResult result;
+    const std::vector<std::string> fallbackOptions = {"What do you mean?", "I'm scared.", "Please continue."};
+
     if (res && res->status == 200) {
         try {
             json responseJson = json::parse(res->body);
-            return trimToLastSentence(responseJson["content"][0]["text"].get<std::string>());
+            std::string rawText = responseJson["content"][0]["text"].get<std::string>();
+
+            // Strip potential markdown code-block wrapping
+            auto start = rawText.find('{');
+            auto end   = rawText.rfind('}');
+            std::string jsonStr = (start != std::string::npos && end > start)
+                ? rawText.substr(start, end - start + 1) : "{}";
+
+            json parsed = json::parse(jsonStr);
+            result.houseLine = parsed.value("house_line", rawText);
+            if (parsed.contains("patient_options") && parsed["patient_options"].is_array()) {
+                for (const auto& opt : parsed["patient_options"])
+                    if (opt.is_string()) result.patientOptions.push_back(opt.get<std::string>());
+            }
+            if (result.patientOptions.empty() && round < 3)
+                result.patientOptions = fallbackOptions;
         } catch (...) {
-            return "[JSON Parse Error]";
+            result.houseLine = "[Parse Error]";
+            if (round < 3) result.patientOptions = fallbackOptions;
         }
+    } else {
+        result.houseLine = "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+        if (round < 3) result.patientOptions = fallbackOptions;
     }
-    return "[API Error: " + (res ? std::to_string(res->status) : "Connection failed") + "]";
+    return result;
 }
 // --- Phase 8: Director's Cut ---
 

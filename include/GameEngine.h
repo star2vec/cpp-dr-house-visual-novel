@@ -11,9 +11,10 @@ class GameEngine {
 private:
     Patient patient;
     LLM aiBrain;
-    int budget = 50000;
+    int budget = 15000;
     int vicodinLevel = 0;
     int turn = 1;
+    int cuddyFundsGranted = 0;
     GameLog<std::string>     narrativeLog;
     GameLog<ActionRecord>    actionLog;
 

@@ -1,0 +1,204 @@
+HOUSE M.D. — "Marcus Webb"
+============================================================
+
+# HOUSE M.D. — "STIFF"
+
+**TEASER**
+
+INT. HOSPITAL ROOM — DAY
+
+MARCUS WEBB (50s, once athletic, now rigid) lies in bed, staring at ceiling tiles. His right foot twitches involuntarily. A NURSE adjusts the IV drip. Marcus's jaw clenches.
+
+MARCUS
+(to himself)
+One... two... three... four...
+
+His left leg spasms. He grips the bedsheet.
+
+MARCUS (CONT'D)
+Come on. Come on.
+
+The door opens. DR. HOUSE (50s, cynical, brilliant) enters with his cane, followed by CHASE, CAMERON, and FOREMAN.
+
+HOUSE
+So you're the guy who forgot how to relax.
+
+MARCUS
+(frustrated)
+I can't move my legs. My foot just... drops. And these spasms—
+
+HOUSE
+Yeah, yeah. Weakness, spasticity, cold makes it worse. Very dramatic. Also very *wrong* if we're thinking what everyone's thinking.
+
+He taps his cane against the bed frame.
+
+HOUSE (CONT'D)
+Blood work's clean. Electrolytes, glucose, muscles aren't dying. So it's not the muscles. Nerve conduction studies came back normal twice. So it's not the wires.
+
+MARCUS
+Then what is it?
+
+HOUSE
+That's the question, isn't it?
+
+---
+
+**ACT ONE**
+
+INT. DIFFERENTIAL DIAGNOSIS ROOM — DAY
+
+The team spreads papers across the table.
+
+CHASE
+Cryoglobulinemia. Cold-triggered exacerbation, progressive weakness—it fits.
+
+CAMERON
+(shaking her head)
+Autoimmune. But systemic, not peripheral. The emotional component matters. Did something happen before this started?
+
+FOREMAN
+ALS. We need to rule out motor neuron disease before we chase ghosts.
+
+HOUSE
+(sitting, leg extended)
+You're all thinking peripheral. Cables, muscles, nerve endings. But what if the problem's upstream? What if his nervous system forgot the most important job it has?
+
+CAMERON
+Which is?
+
+HOUSE
+Telling things to *stop*.
+
+---
+
+INT. HOSPITAL ROOM — DAY
+
+House enters alone. Marcus is rigid, barely able to turn his head.
+
+HOUSE
+Your muscles have been staging a mutiny. Congratulations—complete rigidity without any of the fun parts.
+
+MARCUS
+What do you mean?
+
+HOUSE
+You've stopped dancing at your kid's recital. Stopped reaching for the top shelf. You've basically stopped doing anything that requires your muscles to relax. That's not laziness, Marcus. That's your body forgetting how to let go.
+
+MARCUS
+That doesn't make sense.
+
+HOUSE
+Sure it does—you're just not listening. What I'm seeing is you've become a human statue who can still walk, which means something's systematically poisoning the very thing that tells your muscles when to chill out. Your nervous system's basically locked in permanent "go" mode.
+
+---
+
+**ACT TWO**
+
+INT. DIAGNOSTIC LAB — DAY
+
+Technicians run EMG tests on Marcus. Needles in his legs. His muscles jump and twitch with each electrical stimulation.
+
+TECH
+(into intercom)
+Incremental response on repetitive stimulation. Strength actually improves with repeated contraction.
+
+In the observation room, House and Foreman watch the monitors.
+
+FOREMAN
+That rules out neuromuscular junction disease.
+
+HOUSE
+And ALS. And primary neuropathy. And basically everything we've tested for so far.
+
+FOREMAN
+So what's left?
+
+HOUSE
+Something that locks the system down from the inside.
+
+---
+
+INT. HOSPITAL ROOM — LATER
+
+House sits beside Marcus's bed. The patient stares at the ceiling, his right calf twitching involuntarily.
+
+HOUSE
+ANA panel's negative. No autoimmune markers. Lumbar puncture was clean—no inflammation, no infection. We've eliminated the obvious suspects.
+
+MARCUS
+So you don't know what's wrong with me.
+
+HOUSE
+Not yet.
+
+He stands, moves to the window.
+
+HOUSE (CONT'D)
+But here's what I do know: your muscles aren't dying. Your nerves are conducting signals just fine. Your spinal fluid is clean. You're not having a heart attack. The problem is your brain is forgetting how to send the "off switch" signal to your muscles. It's like someone jammed the brakes, and now everything's stuck in locked-down mode from your spine outward.
+
+MARCUS
+My heart?
+
+HOUSE
+Your heart's fine—trust me, I'd be way more interested if it wasn't. What I'm talking about is deeper: your brain's losing its ability to send the "off switch" signal to your muscles.
+
+---
+
+**ACT THREE**
+
+INT. DIFFERENTIAL DIAGNOSIS ROOM — DAY
+
+House stands at the whiteboard, staring at the test results.
+
+CHASE
+We're running out of tests.
+
+CAMERON
+There has to be something we're missing.
+
+HOUSE
+(tapping marker against board)
+What if it's not what we're testing
+
+============================================================
+[ Game log summary ]
+PATIENT: Marcus Webb
+OUTCOME: WIN — Diagnosis revealed: Stiff Person Syndrome
+TURNS PLAYED: 11
+
+=== NARRATIVE LOG ===
+  [Lab Test: Blood Panel] The blood panel returns: normal electrolytes, glucose, liver and kidney function, and a reassuringly normal creatine kinase—ruling out muscle breakdown or primary myopathy. House leans back in his chair: 'So it's not the muscles dying, not metabolic, not toxic. Which means we're looking at either the nerves controlling them, the brain sending bad signals, or something even more exotic—and we've just eliminated the obvious suspects, which is progress, I guess.
+  [Lab Test: Nerve Conduction Study] The nerve conduction study shows normal motor and sensory conduction velocities with preserved amplitudes throughout the lower extremities, ruling out primary demyelination or axonal degeneration. House leans back: 'Normal wires mean we're not dealing with your garden-variety neuropathy or motor neuron disease—whatever's destroying this patient's muscles, it's not the cables themselves.
+  [BRAINSTORM: Chase] House, I'm thinking cryoglobulinemia with secondary demyelinating neuropathy—the cold-triggered exacerbation is the key. We're looking at immune complex deposition in the peripheral nerves, progressive axonal loss manifesting as that foot drop. I want to run cryoglobulin levels, complement panels, and get an EMG to confirm the demyelinating pattern before we miss the window on plasmapheresis.
+  [BRAINSTORM_BRIEF: Chase] Suspects cryoglobulinemia, recommends cryo panel and EMG
+  [BRAINSTORM: Cameron] The progressive weakness and cold-triggered spasms are screaming autoimmune to me—we're looking at something that's attacking motor control at a systemic level, not just peripheral nerves. The emotional piece matters here too; patients hiding anxiety or trauma often present with somaticized motor symptoms that mimic neurological disease. I want a full autoimmune panel, EMG with temperature stress testing, and we need to dig into whether this started after an infection or major life event.
+  [BRAINSTORM_BRIEF: Cameron] Suspects autoimmune motor syndrome, needs EMG and ANA panel
+  [BRAINSTORM: Foreman] Cold-triggered muscle symptoms with progressive weakness and foot drop screams motor neuron disease, House. ALS is statistically where we live with this presentation. We need EMG, nerve conduction studies, and imaging to rule out structural compression before we chase autoimmune rabbits down holes.
+  [BRAINSTORM_BRIEF: Foreman] suspects motor neuron disease, order EMG immediately
+  [Lab Test: Nerve Conduction Study] The nerve conduction study reveals normal motor and sensory velocities with preserved compound muscle action potentials, but repetitive stimulation shows a peculiar pattern of incremental response—strength paradoxically improves with repeated contraction, ruling out neuromuscular junction disease and typical neuropathy. House leans back: 'So the wiring's fine, the muscles fire when you ask them to, but something's locking the whole system down between contractions—we're looking at a central motor control problem, not peripheral nerve death, which means we've been barking up the wrong tree entirely.
+  [Lab Test: ANA / Autoantibody Panel] The ANA panel returns negative, and complement levels are normal—no evidence of systemic lupus or vasculitis. House leans back in his chair: 'Autoimmune antibodies against muscle or nerve? Nope. Which means we're not chasing inflammation. The weakness and cold-triggered twitching point somewhere else entirely—something that doesn't light up on the usual autoimmune radar.
+  [Lab Test: Nerve Conduction Study] The nerve conduction study reveals normal motor and sensory conduction velocities with preserved compound muscle action potentials, ruling out primary demyelination or axonal degeneration in the peripheral nerves. House leans back: 'Normal wires mean the problem isn't in the cables—it's in the switchboard, the muscle itself, or something upstream telling the muscles to lock down like a paranoid fortress.
+  [Lab Test: Lumbar Puncture] The lumbar puncture yields clear cerebrospinal fluid with normal protein, glucose, and cell counts—no inflammation, no infection, no demyelination markers. House leans back: 'Clean tap rules out the usual neurological suspects: meningitis, encephalitis, MS. But a normal spinal fluid doesn't tell us why his muscles are locking up like a paranoid bodyguard, or why cold makes it worse. We're eliminating possibilities, not finding answers.
+  [Supportive Care: IV Fluid Resuscitation] IV fluids restore peripheral perfusion and stabilize blood pressure, but the progressive muscle weakness in the legs persists unchanged—the foot drop and involuntary calf twitching continue unabated despite adequate hydration. House leans against the wall: 'Dehydration wasn't the villain here. We've bought the patient comfort and time, but we're still treating symptoms while the real mechanism—whatever's actually misfiring in the nervous system—keeps grinding away.
+  [Lab Test: Nerve Conduction Study] The nerve conduction study reveals preserved motor and sensory conduction velocities with normal latencies, but needle electromyography shows characteristic motor unit action potentials with early recruitment—a pattern inconsistent with peripheral neuropathy or motor neuron disease. House leans back: 'So it's not the wires themselves that are fried. The signals get through just fine. We're looking at something upstream, something that's telling the muscles to lock down like a prison yard on lockdown, and the peripheral nervous system is screaming that it's innocent.
+  [Lab Test: Nerve Conduction Study] The nerve conduction study reveals normal motor and sensory velocities with intact conduction blocks—no evidence of demyelination or axonal degeneration in the peripheral nerves. House leans back: 'So it's not the wires. The problem's upstream, in the motor cortex or the spinal circuitry itself—something's locking the whole system down from the inside, and standard electrical testing won't find it.
+  [EUREKA — PATIENT PERSPECTIVE] Marcus Webb thinks: # Hospital Room
+
+I'm lying here staring at the ceiling tiles, counting them for the hundredth time because my mind won't stop racing with questions I can't answer. My legs feel heavy and useless, like they belong to someone else entirely, and this morning my foot just... wouldn't cooperate when I tried to walk. The room smells sharp and clean, almost too clean—that bleached, sterile smell that makes my throat tight and reminds me this is serious. Every few seconds my calf muscles jump and twitch on their own, and it's worse now that they've cranked up the air conditioning, which is making me more anxious than anything else. I keep waiting for someone to come explain what's happening to my own body, but mostly I just hear footsteps in the hallway and the hum of machines I don't understand, and that waiting—that helpless waiting—is almost worse than the weakness itself.
+  [EUREKA — HOUSE ENTERS] House: "Your muscles have been staging a mutiny, and they're winning—congratulations, you've achieved what most people only dream about: complete and utter rigidity without any of the fun parts.
+  [EUREKA — ROUND 1/4] Patient: "What do you mean?" | House: "Yeah, yeah, you're confused—shocking development. But here's what I noticed: you've stopped dancing at your kid's recital, stopped reaching for the top shelf, basically stopped doing anything that requires your muscles to *relax*. That's not laziness, Marcus. That's your body forgetting how to let go."
+  [EUREKA — ROUND 2/4] Patient: "That doesn't make sense." | House: "Sure it does—you're just not listening. What I'm seeing is you've become a human statue who can still walk, which means something's systematically poisoning the very thing that tells your muscles when to chill out. Your nervous system's basically locked in a permanent "go" mode."
+  [EUREKA — ROUND 3/4] Patient: "My heart?" | House: "Your heart's fine—trust me, I'd be way more interested if it wasn't. What I'm talking about is deeper: your brain's losing its ability to send the "off switch" signal to your muscles. It's like someone jammed the brakes, and now everything's stuck in locked-down mode from your spine outward."
+  [EUREKA — ROUND 4/4] Patient: "Is it serious?" | House: "Yes, it's serious—but that's not the interesting part. What matters is we're looking at Stiff Person Syndrome: your immune system's attacking the cells that produce GABA, the neurotransmitter that tells muscles to relax. That's why you're slowly turning into a plank. We catch it now, we can fight back."
+  [EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: Stiff Person Syndrome
+
+=== ACTION LOG ===
+  [Lab Test] Blood Panel | HP:-1 CLR:+8% MAL:+0% $-300
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700
+  [Lab Test] ANA / Autoantibody Panel | HP:-1 CLR:+8% MAL:+0% $-500
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700
+  [Lab Test] Lumbar Puncture | HP:-1 CLR:+8% MAL:+0% $-800
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700

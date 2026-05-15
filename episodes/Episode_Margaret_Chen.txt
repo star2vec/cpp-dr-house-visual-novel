@@ -1,0 +1,186 @@
+HOUSE M.D. — "Margaret Chen"
+============================================================
+
+# HOUSE M.D.
+
+## "PROGEROID"
+
+**TEASER**
+
+INT. PRINCETON-PLAINSBORO TEACHING HOSPITAL - DIAGNOSTIC MEDICINE OFFICE - DAY
+
+HOUSE sits at his desk, tossing a tennis ball against the wall. It bounces back. He catches it without looking.
+
+The door opens. CAMERON enters with a chart.
+
+CAMERON
+Forty-five-year-old female, Margaret Chen. Admitted with joint hypermobility, shoulder dislocations, and elevated liver enzymes.
+
+HOUSE
+(still tossing)
+Hypermobility in a forty-five-year-old isn't a party trick—it's a symptom of something eating her connective tissue. What else?
+
+CAMERON
+Skin showing signs of premature aging in non-sun-exposed areas. Dermatology's stumped.
+
+House catches the ball. Stops.
+
+HOUSE
+Run a blood panel. Full metabolic workup. If her liver's already checked out, we're not looking at infection or simple cirrhosis.
+
+CAMERON
+What are we looking at?
+
+HOUSE
+(standing, limping toward the door)
+Something systemic. Something that's decided her joints and liver are old friends.
+
+He exits, leaving Cameron with the chart.
+
+---
+
+**ACT ONE**
+
+INT. HOSPITAL ROOM - MARGARET'S BED - DAY
+
+MARGARET CHEN, 45, sits propped up against pillows. Her movements are careful, deliberate. A shoulder brace hangs loosely on her left arm. Her skin, visible on her forearms, has a peculiar papery quality—thin, almost translucent in places.
+
+HOUSE enters with CAMERON and FOREMAN behind him.
+
+HOUSE
+(examining her hands)
+How long have your fingernails been growing slower than they used to?
+
+MARGARET
+(uncertain)
+I... I'm not sure. A year? Maybe longer. Why?
+
+HOUSE
+Because you've compensated by filing them obsessively. But that's not the real problem.
+
+He sits on the edge of the bed uninvited.
+
+HOUSE (CONT'D)
+Your skin. The areas that don't see sunlight—your inner arms, your thighs—does it feel papery? Like tissue paper?
+
+Margaret hesitates. Nods slowly.
+
+MARGARET
+How did you—
+
+HOUSE
+That's not aging, Margaret. That's your body betraying you at the cellular level.
+
+INT. DIAGNOSTIC MEDICINE CONFERENCE ROOM - DAY
+
+House stands before a light box, studying lab results. The team sits around the table.
+
+HOUSE
+Blood panel shows elevated transaminases. AST 187, ALT 203. Low albumin at 3.1. Mild thrombocytopenia. The liver's already checked out.
+
+CAMERON
+Autoimmune?
+
+HOUSE
+ANA panel's negative. No lupus, no rheumatoid factor. We're barking up the wrong immunological tree while her liver fibroses and her joints fall apart like she's made of wet tissue paper.
+
+FOREMAN
+Metabolic disorder?
+
+HOUSE
+Comprehensive metabolic panel confirms hepatic synthetic dysfunction. Elevated transaminases at nearly triple normal. Prolonged prothrombin time. But it doesn't tell us *why* a forty-five-year-old's collagen is turning to ash.
+
+He limps to the window.
+
+HOUSE (CONT'D)
+Heavy metal screen comes back clean. Lead, mercury, cadmium, arsenic—all normal. So it's not environmental poisoning. Just a patient whose connective tissue is coming apart at the seams for reasons we haven't touched yet.
+
+---
+
+**ACT TWO**
+
+INT. DIAGNOSTIC MEDICINE CONFERENCE ROOM - LATER
+
+HOUSE sits. A thyroid panel is displayed on the screen behind him.
+
+HOUSE
+Thyroid's fine. TSH 2.1, normal free T4, no antibodies. So we're chasing the wrong endocrine horse.
+
+Cameron frowns, frustrated.
+
+CAMERON
+We've ruled out everything.
+
+HOUSE
+We've ruled out everything obvious. That leaves us with the impossible.
+
+He stands abruptly.
+
+HOUSE (CONT'D)
+Order a genetic panel. Full connective tissue workup. If her body's systematically destroying itself, the blueprint's got to be flawed.
+
+INT. HOSPITAL ROOM - MARGARET'S BED - NIGHT
+
+IV fluids drip into Margaret's arm. She stares at the ceiling, exhausted.
+
+HOUSE enters quietly.
+
+HOUSE
+Giving you water buys us time to think. Doesn't fix what's eating your connective tissue and destroying your liver from the inside out.
+
+MARGARET
+(quietly)
+What is it, Doctor? What's wrong with me?
+
+HOUSE
+That's what we're going to find out.
+
+INT. DIAGNOSTIC MEDICINE CONFERENCE ROOM - DAY
+
+House stands before the genetic panel results. His expression shifts—subtle, but there.
+
+HOUSE
+Pathogenic variants in genes associated with connective tissue integrity and collagen cross-linking. Secondary hepatic involvement markers present.
+
+He taps the screen.
+
+HOUSE (CONT'D)
+We're not looking at a
+
+============================================================
+[ Game log summary ]
+PATIENT: Margaret Chen
+OUTCOME: WIN — Diagnosis revealed: Progeroid Arthropathy with Tendon Contractures and Skin Atrophy (PATCS/Mulvihill-Smith syndrome variant affecting liver)
+TURNS PLAYED: 13
+
+=== NARRATIVE LOG ===
+  [Lab Test: Blood Panel] The blood panel reveals elevated transaminases (AST 187, ALT 203), low albumin at 3.1 g/dL, and a mild thrombocytopenia of 118K—markers consistent with hepatic synthetic dysfunction and early portal hypertension. House studies the results: 'The liver's already checked out, which means whatever's eating it from the inside isn't an infection or simple cirrhosis. We've got a systemic process that's decided the joint hypermobility and the failing liver are old friends.
+  [Lab Test: ANA / Autoantibody Panel] The ANA panel returns negative across all standard autoantibody markers; no evidence of lupus, rheumatoid factor, or anti-CCP antibodies. House leans back: 'Textbook autoimmune workup, textbook negative result—which means we're barking up the wrong immunological tree while his liver quietly fibroses and his joints keep falling apart like he's made of wet tissue paper.
+  [Lab Test: Comprehensive Metabolic Panel] The comprehensive metabolic panel reveals elevated aspartate aminotransferase (AST) and alanine aminotransferase (ALT) at 2.8× and 3.1× normal limits respectively, along with mildly reduced albumin and prolonged prothrombin time, confirming hepatic synthetic dysfunction. House leans back: 'Liver's failing to make clotting factors and proteins—we're watching connective tissue degrade systemically, not just the joints. This test tells us the organ involvement but not *why* a forty-five-year-old's collagen is turning to ash.
+  [Lab Test: Heavy Metal Screen] The heavy metal screen returns negative across all tested elements—lead, mercury, cadmium, arsenic all within normal limits. House leans back: 'So it's not poisoning from the environment. That rules out one bucket of liver toxins, but we're still watching a 41-year-old whose connective tissue is coming apart at the seams and whose liver is scarring for reasons we haven't touched yet—this test just tells us what it isn't, not what's actually eating him from the inside.
+  [Lab Test: Thyroid Panel] Thyroid panel returns normal: TSH 2.1 mIU/L, free T4 1.0 ng/dL, no antibodies. House leans back in his chair: 'Thyroid's fine, liver's still scarring itself into a pretzel, and his shoulders keep popping out like a faulty toy—we're chasing the wrong endocrine horse when the real problem is something that doesn't care about hormones.
+  [Supportive Care: IV Fluid Resuscitation] IV fluids restore circulating volume and stabilize blood pressure, though the patient's liver enzymes remain stubbornly elevated and the hypermobility of his joints unchanged. House leans against the wall: 'Giving him water buys us time to think, but we're treating dehydration, not the thing that's eating his connective tissue and destroying his liver from the inside out.
+  [Lab Test: Genetic Panel] The genetic panel returns results showing pathogenic variants in genes associated with connective tissue integrity and collagen cross-linking, with secondary hepatic involvement markers present. House leans back: 'So we're not looking at a simple EDS knockoff or metabolic fluke—this is systemic, baked into the DNA, and it's already remodeling his liver. The joint hypermobility and fibrosis aren't separate problems; they're siblings from the same genetic parent. We finally have a molecular lens.
+  [Supportive Care: Nutritional Support / TPN] Albumin and prealbumin levels stabilize over 48 hours; the patient's energy improves slightly and shoulder pain during passive range-of-motion testing decreases marginally. House notes that feeding a patient with progressive connective-tissue breakdown and hepatic scarring buys comfort but doesn't touch whatever is systematically destroying his joints and liver—we're rearranging deck chairs while the ship sinks.
+  [Lab Test: Skin / Tissue Biopsy] The skin biopsy reveals marked dermal atrophy with loss of elastic fibers, collagen disorganization, and focal areas of fibrosis—findings consistent with a systemic connective tissue disorder affecting multiple organ systems. House notes the histology confirms what the joint hypermobility and liver fibrosis already suggested: this isn't a local joint problem or isolated hepatic disease, but a generalized defect in structural proteins that's slowly dismantling the patient from the inside out.
+  [Lab Test: Bone Marrow Biopsy] Bone marrow biopsy shows normocellular marrow with normal myeloid and erythroid lineages; no evidence of hematologic malignancy or storage disease. House grimaces at the slide: 'Marrow's pristine. Rules out half the zebras that cause joint chaos and liver rot, but we're still chasing ghosts—this patient's problem is written in connective tissue and hepatic architecture, not in blood-forming real estate.
+  [EUREKA — PATIENT PERSPECTIVE] Margaret Chen thinks: # Margaret Chen - Hospital Room
+
+I don't understand why my body keeps falling apart like this. My shoulder throbs with a dull, constant ache—it slipped out of place again last week, and now I'm here in this cold room waiting for answers that nobody seems able to give me. The air smells sharp and clean in a way that makes my nose sting, like everything's been scrubbed down to nothing, and it only reminds me how serious this all is. My joints feel loose and wrong, like they're not quite sitting where they should be, and I keep shifting position trying to find something that doesn't hurt. The fluorescent lights hum above me, and I'm just lying here, hour after hour, wondering what's actually wrong with me and why my body won't cooperate anymore.
+  [EUREKA — HOUSE ENTERS] House: So, your body decided to skip ahead in the timeline. Fascinating choice.
+  [EUREKA — ROUND 1/3] Patient: "What does that even mean, Doctor?" | House: "Your fingernails are growing slower than they should, which you've probably compensated for by filing them obsessively—never mind that. The real question is whether you've noticed your skin feeling papery in places that don't see sunlight. That's not aging, that's betrayal."
+  [EUREKA — ROUND 2/3] Patient: "I... I haven't noticed anything like that." | House: "Then we're looking at a collagen synthesis defect—your fibroblasts aren't producing or cross-linking collagen properly, which explains the skin atrophy, the joint stiffness, and why your liver's enzymes are tanking. It's systemic connective tissue failure masquerading as unrelated complaints."
+  [EUREKA — ROUND 3/3] Patient: "So what causes that? Can you fix it?" | House: "Progeroid Arthropathy with Tendon Contractures and Skin Atrophy—PATCS, Mulvihill-Smith syndrome variant with hepatic involvement. Your collagen doesn't fold right at the genetic level, so your body ages faster than it should. We can't fix the defect, but we can slow the damage. No, you're not going crazy—you're just falling apart ahead of schedule."
+  [EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: Progeroid Arthropathy with Tendon Contractures and Skin Atrophy (PATCS/Mulvihill-Smith syndrome variant affecting liver)
+
+=== ACTION LOG ===
+  [Lab Test] Blood Panel | HP:-2 CLR:+14% MAL:+0% $-300
+  [Lab Test] ANA / Autoantibody Panel | HP:-1 CLR:+6% MAL:+0% $-500
+  [Lab Test] Comprehensive Metabolic Panel | HP:-2 CLR:+16% MAL:+0% $-400
+  [Lab Test] Heavy Metal Screen | HP:-1 CLR:+6% MAL:+0% $-600
+  [Lab Test] Thyroid Panel | HP:-1 CLR:+2% MAL:+0% $-350
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] Genetic Panel | HP:+0 CLR:+16% MAL:+0% $-3000
+  [Supportive Care] Nutritional Support / TPN | HP:+3 CLR:+0% MAL:+0% $-600
+  [Lab Test] Skin / Tissue Biopsy | HP:-2 CLR:+16% MAL:+0% $-1800
+  [Lab Test] Bone Marrow Biopsy | HP:-1 CLR:+7% MAL:+0% $-2200

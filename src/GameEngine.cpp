@@ -208,7 +208,7 @@ void GameEngine::showSocialSubMenu() {
     std::vector<std::string> socialOptions = {
         "Team Brainstorm       (Chase / Cameron / Foreman)",
         "Consult Wilson        (Case Sounding Board)  [+5% clarity]",
-        "Talk to Cuddy",
+        "Talk to Cuddy             (Budget / Favors)",
         "Go Back"
     };
 
@@ -307,6 +307,12 @@ void GameEngine::showSocialSubMenu() {
     std::vector<std::string> chatHistory;
     std::vector<std::string> houseOptions = aiBrain.getHouseIntents(characterName);
 
+    // Inject emergency budget option at front — label reflects availability
+    const std::string fundsLabel = (cuddyFundsGranted < 2)
+        ? "Request Emergency Budget Approval  [+$5,000 / +8% malpractice]"
+        : "Request Emergency Funding          [Cuddy already gave you enough]";
+    houseOptions.insert(houseOptions.begin(), fundsLabel);
+
     for (int i = 0; i < maxMessages; ++i) {
         int selectedLine = 0;
         bool lineChosen = false;
@@ -329,11 +335,38 @@ void GameEngine::showSocialSubMenu() {
             else if (key == 3) { lineChosen = true; }
         }
 
+        // Walk out (last option)
         if (selectedLine == static_cast<int>(houseOptions.size()) - 1) {
             chatHistory.push_back("House: *Pops a pill and limps away.*");
             break;
         }
 
+        // Emergency budget request (index 0)
+        if (selectedLine == 0) {
+            if (cuddyFundsGranted < 2) {
+                budget += 5000;
+                patient.modifyMalpractice(8);
+                ++cuddyFundsGranted;
+                chatHistory.push_back("House: I need emergency funds. Critical test.");
+                chatHistory.push_back("[Cuddy]: Fine. Five thousand. Don't make me regret this, House.");
+                std::cout << "\n\033[1;33m[Cuddy]: Fine. Five thousand. Don't make me regret this, House.\033[0m\n";
+                std::cout << "Budget:      +$5,000  (Remaining: $" << budget << ")\n";
+                std::cout << "Malpractice: +8%      (Current: " << patient.getMalpractice() << "%)\n";
+                // Update label for next round if any remain
+                houseOptions[0] = (cuddyFundsGranted < 2)
+                    ? "Request Emergency Budget Approval  [+$5,000 / +8% malpractice]"
+                    : "Request Emergency Funding          [Cuddy already gave you enough]";
+            } else {
+                chatHistory.push_back("House: More money.");
+                chatHistory.push_back("[Cuddy]: No. I already gave you two emergency allocations. You're done, House.");
+                std::cout << "\n\033[1;33m[Cuddy]: No. I already gave you two emergency allocations. You're done.\033[0m\n";
+            }
+            std::cout << "\n(Press ENTER to continue...)";
+            while (TerminalUI::getKeyPress() != 3);
+            continue;
+        }
+
+        // Regular dialogue (LLM options, shifted by 1 due to injected budget option)
         DialogueResponse aiDialogue = aiBrain.generateDialogue(
             characterName, chatHistory, houseOptions[selectedLine],
             patient.getName(), patient.getSymptom()
@@ -352,8 +385,7 @@ void GameEngine::showSocialSubMenu() {
 void GameEngine::showMiscellaneousSubMenu() {
     std::vector<std::string> chaosOptions = {
         "Pop Vicodin            (+10% clarity, +1 Vicodin level)",
-        "Break Into Patient's House  (+15% clarity, +20% malpractice)",
-        "Steal Equipment Budget (+25% clarity, +15% malpractice, -$20000)",
+        "Break Into Patient's House  (+22% clarity, +20% malpractice)",
         "Go Back"
     };
 
@@ -375,7 +407,7 @@ void GameEngine::showMiscellaneousSubMenu() {
         else if (key == 3) { chosen = true; }
     }
 
-    if (selectedIndex == 3) return; // Go Back
+    if (selectedIndex == 2) return; // Go Back
 
     TerminalUI::clearScreen();
 
@@ -389,7 +421,7 @@ void GameEngine::showMiscellaneousSubMenu() {
         std::cout << "Vicodin level: " << vicodinLevel << "/10\n";
         if (vicodinLevel >= 9)
             std::cout << "\033[1;31mWarning: One more pill and Cuddy ships you to Mayfield.\033[0m\n";
-        checkEndings(); // throws MayfieldWardException if vicodinLevel > 10
+        checkEndings(); // throws MayfieldWardException if vicodinLevel >= 10
 
     } else if (selectedIndex == 1) {
         // ── Break Into Patient's House ────────────────────────────────────────
@@ -398,25 +430,14 @@ void GameEngine::showMiscellaneousSubMenu() {
         std::cout.flush();
         std::string clue = aiBrain.generateHouseClue(
             patient.getHiddenDiagnosis(), patient.getName(), patient.getSymptom());
-        patient.modifyClarity(15);
+        patient.modifyClarity(22);
         patient.modifyMalpractice(20);
         narrativeLog += std::string("[CLUE] ") + clue;
         std::cout << "\n\033[1;33m\"";
         TerminalUI::typewrite(clue);
         std::cout << "\"\033[0m\n\n";
-        std::cout << "Clarity:     +15%  (Current: " << patient.getClarity() << "%)\n";
+        std::cout << "Clarity:     +22%  (Current: " << patient.getClarity() << "%)\n";
         std::cout << "Malpractice: +20%  (Current: " << patient.getMalpractice() << "%)\n";
-
-    } else if (selectedIndex == 2) {
-        // ── Steal Equipment Budget ────────────────────────────────────────────
-        budget -= 20000;
-        patient.modifyClarity(25);
-        patient.modifyMalpractice(15);
-        std::cout << "\n[ BUDGET RAID ] House redirects the MRI department's quarterly fund.\n";
-        std::cout << "Cuddy will notice. She always notices.\n\n";
-        std::cout << "Clarity:     +25%  (Current: " << patient.getClarity() << "%)\n";
-        std::cout << "Malpractice: +15%  (Current: " << patient.getMalpractice() << "%)\n";
-        std::cout << "Budget:      -$20000  (Remaining: $" << budget << ")\n";
     }
 
     std::cout << "\n(Press ENTER to return to the main room...)";
@@ -557,6 +578,7 @@ void GameEngine::run() {
     catch (const PatientDeathException& e) {
         TerminalUI::clearScreen();
         std::cout << "\n[ GAME OVER ] " << e.what() << "\n";
+        std::cout << "\033[2mIt was " << patient.getHiddenDiagnosis() << ".\033[0m\n";
     }
     catch (const FiredByHospitalException& e) {
         TerminalUI::clearScreen();
@@ -786,69 +808,69 @@ void GameEngine::runEurekaFinale() {
     std::cout << "\n(Press ENTER to continue...)\n";
     while (TerminalUI::getKeyPress() != 3);
 
-    // --- Beat 3: House enters ---
+    // --- Beat 3: House enters (round 0 — also fetches options for round 1) ---
     TerminalUI::clearScreen();
     std::cout << "\n\033[2m[ The door swings open. A cane hits the floor. ]\033[0m\n\n";
     std::cout << "  (House is thinking...)\n";
     std::cout.flush();
-    std::string openingLine = aiBrain.generateEurekaDialogue(hiddenDiagnosis, patientName, "", 0, {});
-    narrativeLog += std::string("[EUREKA — HOUSE ENTERS] House: ") + openingLine;
+    EurekaRoundResult openingResult = aiBrain.generateEurekaDialogue(hiddenDiagnosis, patientName, "", 0, {});
+    narrativeLog += std::string("[EUREKA — HOUSE ENTERS] House: ") + openingResult.houseLine;
     std::cout << "\033[1;33mHouse:\033[0m ";
-    TerminalUI::typewrite(openingLine);
+    TerminalUI::typewrite(openingResult.houseLine);
     std::cout << "\n";
     std::cout << "\n(Press ENTER to continue...)\n";
     while (TerminalUI::getKeyPress() != 3);
 
-    // --- Beat 4: Diagnosis loop ---
-    std::vector<std::string> history; // alternates [playerComment, houseResponse, ...]
+    // --- Beat 4: Diagnosis loop (3 rounds) ---
+    std::vector<std::string> history;
+    std::vector<std::string> currentOptions = openingResult.patientOptions;
+    if (currentOptions.empty())
+        currentOptions = {"What do you mean?", "I'm scared.", "Just tell me."};
 
-    const std::vector<std::vector<std::string>> commentOptions = {
-        {"What do you mean?",          "I just want to go home.",             "..."},
-        {"That doesn't make sense.",    "Are you even listening to me?",       "Please just tell me."},
-        {"My heart?",                   "What body system?",                   "I don't understand any of this."},
-        {"Is it serious?",              "Will I be okay?",                     "I knew something was wrong."}
-    };
-
-    for (int round = 1; round <= 4; ++round) {
-        const std::vector<std::string>& opts = commentOptions[round - 1];
-
+    for (int round = 1; round <= 3; ++round) {
         int sel = 0;
         bool chosen = false;
         while (!chosen) {
             TerminalUI::clearScreen();
-            std::cout << "\n\033[1;35m[ ROUND " << round << "/4 — How do you respond? ]\033[0m\n\n";
-            for (int i = 0; i < (int)opts.size(); ++i) {
+            std::cout << "\n\033[1;35m[ ROUND " << round << "/3 — How do you respond? ]\033[0m\n\n";
+            for (int i = 0; i < (int)currentOptions.size(); ++i) {
                 if (i == sel)
-                    std::cout << "  -> \033[1;36m" << opts[i] << "\033[0m\n";
+                    std::cout << "  -> \033[1;36m" << currentOptions[i] << "\033[0m\n";
                 else
-                    std::cout << "     " << opts[i] << "\n";
+                    std::cout << "     " << currentOptions[i] << "\n";
             }
             int key = TerminalUI::getKeyPress();
-            if (key == 1) { sel--; if (sel < 0) sel = (int)opts.size() - 1; }
-            else if (key == 2) { sel++; if (sel >= (int)opts.size()) sel = 0; }
+            if (key == 1) { sel--; if (sel < 0) sel = (int)currentOptions.size() - 1; }
+            else if (key == 2) { sel++; if (sel >= (int)currentOptions.size()) sel = 0; }
             else if (key == 3) chosen = true;
         }
 
-        std::string comment = opts[sel];
+        std::string comment = currentOptions[sel];
 
         TerminalUI::clearScreen();
         std::cout << "\n\033[2mYou: " << comment << "\033[0m\n\n";
         std::cout << "  (House is thinking...)\n";
         std::cout.flush();
 
-        std::string houseResponse = aiBrain.generateEurekaDialogue(
+        EurekaRoundResult roundResult = aiBrain.generateEurekaDialogue(
             hiddenDiagnosis, patientName, comment, round, history);
 
-        narrativeLog += std::string("[EUREKA — ROUND ") + std::to_string(round) + "/4]"
+        narrativeLog += std::string("[EUREKA — ROUND ") + std::to_string(round) + "/3]"
                       + " Patient: \"" + comment + "\""
-                      + " | House: \"" + houseResponse + "\"";
+                      + " | House: \"" + roundResult.houseLine + "\"";
 
         std::cout << "\033[1;33mHouse:\033[0m ";
-        TerminalUI::typewrite(houseResponse);
+        TerminalUI::typewrite(roundResult.houseLine);
         std::cout << "\n";
 
         history.push_back(comment);
-        history.push_back(houseResponse);
+        history.push_back(roundResult.houseLine);
+
+        if (round < 3) {
+            currentOptions = roundResult.patientOptions;
+            if (currentOptions.empty())
+                currentOptions = {"What does that mean?", "I'm listening.", "Is it serious?"};
+        }
 
         std::cout << "\n(Press ENTER to continue...)\n";
         while (TerminalUI::getKeyPress() != 3);

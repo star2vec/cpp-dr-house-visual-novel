@@ -1,0 +1,211 @@
+HOUSE M.D. — "Margaret Voss"
+============================================================
+
+# HOUSE M.D.
+
+## "ORIGAMI"
+
+**TEASER**
+
+INT. PRINCETON-PLAINSBORO HOSPITAL — DIAGNOSTIC MEDICINE OFFICE — DAY
+
+HOUSE sits at his desk, cane resting against the armrest. He drums his fingers on a patient chart, expression unreadable. CAMERON, CHASE, and FOREMAN stand around the whiteboard, covered in crossed-out differential diagnoses.
+
+CAMERON
+We've ruled out lupus, rheumatoid disease, every autoimmune panel we could throw at her. The ANA's clean.
+
+FOREMAN
+Which leaves us with... what? Hypermobility syndrome? That doesn't explain the hepatosplenomegaly or the thrombocytopenia.
+
+HOUSE
+(not looking up)
+Or it explains all of it perfectly, and you're all too busy looking at the forest to notice the trees are made of cardboard.
+
+CHASE
+Sir?
+
+HOUSE
+A fifty-two-year-old woman whose shoulders dislocate like party tricks. Elevated liver enzymes. Platelets dropping. Spleen the size of a grapefruit. You're thinking inflammation. Infection. Immune system gone haywire.
+
+(finally looks up)
+
+What if the problem isn't what her body's fighting—what if it's how her body's built?
+
+INT. HOSPITAL ROOM — CONTINUOUS
+
+MARGARET VOSS (52), lies in bed, her frame thin but oddly flexible. A bruise darkens her forearm. She stares at the ceiling tiles, counting silently, her jaw tight.
+
+The door opens. HOUSE enters, cane first.
+
+HOUSE
+Your mother kept you in ballet until age sixteen.
+
+MARGARET
+(startled)
+How did you—
+
+HOUSE
+Unusual commitment for a kid whose spine was basically origami. But here's what I need to know: when someone touches your arm, does your skin bruise if they're not careful?
+
+MARGARET
+(hesitant)
+Yes. I thought everyone did that.
+
+House's expression doesn't change, but something shifts in his eyes.
+
+HOUSE
+Your collagen—the structural glue holding your skin, joints, and connective tissue together—is defective at the molecular level. Not weak. Malformed.
+
+**END TEASER**
+
+---
+
+**ACT ONE**
+
+INT. DIAGNOSTIC MEDICINE OFFICE — DAY
+
+House stands at the whiteboard, writing furiously. He circles "COLLAGEN DISORDER" and underlines it twice.
+
+FOREMAN
+Ehlers-Danlos?
+
+HOUSE
+Classic EDS doesn't explain the systemic involvement. We need tissue architecture—a skin biopsy. And genetic screening. Full panel.
+
+CAMERON
+If it's genetic, there's no cure. Just management.
+
+HOUSE
+Then we'd better manage before she bleeds out from something that sounds minor.
+
+He turns to face them.
+
+HOUSE (CONT'D)
+She's been this way her whole life. Built wrong from the factory. The question is whether her body's finally figured it out.
+
+INT. HOSPITAL ROOM — LATER
+
+A NURSE inserts an IV. Margaret watches her own arm, expecting bruising.
+
+MARGARET
+(quietly)
+How long have I been broken?
+
+HOUSE
+(from the doorway)
+Since your first cell divided. You just didn't notice until it mattered.
+
+He enters, closing the door behind him.
+
+HOUSE (CONT'D)
+Tell me about your childhood. Any fractures that seemed minor but caused major damage?
+
+MARGARET
+I fell off a horse when I was twelve. Broke three ribs. The doctor said I was lucky. But my parents... they knew something was different. They never said it, but I could tell.
+
+HOUSE
+Different how?
+
+MARGARET
+I was too flexible. Too fragile. My mother was terrified I'd shatter.
+
+House absorbs this. He leans against the wall, processing.
+
+HOUSE
+She wasn't wrong.
+
+**ACT TWO**
+
+INT. DIAGNOSTIC MEDICINE OFFICE — DAY
+
+The team gathers around lab results. The skin biopsy shows abnormal collagen architecture.
+
+CHASE
+Reduced type VI collagen fibrils. This is—
+
+FOREMAN
+A collagen synthesis disorder.
+
+CAMERON
+Multi-system involvement. The dislocations, the hepatosplenomegaly, the bleeding issues—they're all the same problem.
+
+HOUSE
+(sitting)
+The body's instruction manual was written in crayon. Everything downstream from that is just consequences.
+
+He stands, grabbing his cane.
+
+HOUSE (CONT'D)
+Genetic panel. Now. And while we wait, we start supportive care. Blood work shows she's hemorrhaging. Transfusion.
+
+INT. HOSPITAL ROOM — LATER
+
+A bag of blood hangs from an IV pole. Margaret watches it drip, her expression distant.
+
+MARGARET
+(to herself)
+Swiss cheese. That's what he said. Swiss cheese instead of collagen.
+
+The door opens. HOUSE enters with results.
+
+HOUSE
+Your genetic panel came back. COL6A1 mutation. Your type VI collagen is structurally defective—not just weak. Wrong from the blueprint.
+
+MARGARET
+Kyphosco
+
+============================================================
+[ Game log summary ]
+PATIENT: Margaret Voss
+OUTCOME: WIN — Diagnosis revealed: Kyphoscoliotic Ehlers-Danlos Syndrome (kEDS, COL6A1/COL6A2 mutations)
+TURNS PLAYED: 16
+
+=== NARRATIVE LOG ===
+  [Lab Test: Blood Panel] The blood panel reveals elevated liver enzymes (AST 187, ALT 156), mild thrombocytopenia at 118K, and normal coagulation studies—consistent with hepatic involvement rather than a primary clotting disorder. House leans back: 'Liver's angry, platelets are dropping, but the real question is why a 52-year-old with party-trick joints is lighting up like a Vegas casino. We're looking at systemic connective tissue failure, not just loose shoulders.
+  [Lab Test: ANA / Autoantibody Panel] The ANA panel returns negative, and the standard autoantibody screen shows no evidence of lupus, rheumatoid disease, or other classic connective tissue disorders—yet the patient's shoulder dislocations continue and the spleen remains enlarged. House drums his fingers on the chart: 'No antibodies means we're not chasing an immune attack on the joints. So either we're looking at a structural defect the immune system never learned to hate, or we're barking up the wrong tree entirely.
+  [Lab Test: Comprehensive Metabolic Panel] The comprehensive metabolic panel returns largely normal: glucose 98 mg/dL, electrolytes balanced, liver enzymes mildly elevated (AST 52, ALT 48), albumin low-normal at 3.2 g/dL, and creatinine within range. House leans back in his chair: 'Liver's angry, protein stores are borderline, but nothing here explains why this patient's connective tissue is falling apart like wet cardboard—we're still chasing shadows while the real culprit hides in the collagen itself.
+  [Lab Test: Genetic Panel] The genetic panel returns markers consistent with a rare collagen-synthesis disorder affecting connective tissue integrity across multiple organ systems—the kind of mutation that explains why this patient's joints dislocate like a broken puppet and why the liver and spleen are enlarged from the same underlying tissue fragility. House leans back: 'Congratulations. We now know the patient's DNA is writing a horror story in three languages simultaneously. The question is whether we can slow the plot before the next act—because there's no rewind button on this one.
+  [BRAINSTORM: Chase] Sir, I'm thinking we're looking at a primary collagen disorder with systemic manifestations—specifically, I'd lean toward a Type VI collagenopathy with hepatic involvement. The progressive joint hypermobility, recurrent dislocations, and the hepatosplenomegaly with thrombocytopenia all fit a connective tissue dysgenesis affecting multiple organ systems. We should run quantitative procollagen analysis and consider a skin biopsy for electron microscopy to visualize the collagen architecture.
+  [BRAINSTORM_BRIEF: Chase] collagenopathy, recommends collagen analysis and EM biopsy
+  [BRAINSTORM: Cameron] House, we need to stop chasing infections and autoimmune panels. This pattern—hypermobility, recurrent dislocations, organ involvement, and blood cell issues—screams systemic connective tissue disorder. The real question is whether this patient's been hiding joint problems their whole life, or if something triggered rapid progression. We should be looking at collagen synthesis defects, not inflammation.
+  [BRAINSTORM_BRIEF: Cameron] connective tissue disorder, collagen screening needed
+  [BRAINSTORM: Foreman] Sir, we need to think connective tissue first — the hypermobility and recurrent dislocations point to a systemic collagen disorder, not just ligamentous laxity. The hepatosplenomegaly and thrombocytopenia suggest visceral involvement, which rules out simple EDS and pushes us toward something with multi-organ manifestation. I'd run a full connective tissue workup: skin biopsy for collagen architecture, electron microscopy if we can get it, and genetic screening for heritable disorders affecting structural proteins.
+  [BRAINSTORM_BRIEF: Foreman] systemic collagen defect, pursue tissue biopsy
+  [Lab Test: Skin / Tissue Biopsy] The skin biopsy reveals abnormal collagen architecture with reduced and disorganized type VI collagen fibrils in the dermis, a hallmark finding in connective tissue disorders affecting structural proteins. House leans back: "Collagen's supposed to hold the body together like a decent plot—this patient's got Swiss cheese instead, which explains why their joints fall apart and their liver's throwing a tantrum. We're finally looking at the actual machinery, not just the symptoms it's breaking.
+  [Treatment: Enzyme Replacement Therapy] Enzyme replacement therapy was initiated, but within 48 hours the patient developed acute worsening of joint pain, spontaneous bleeding from the gums, and platelet count dropped to 89,000—the hepatosplenomegaly unchanged. House observes: 'You just threw a lysosomal enzyme at a collagen synthesis disorder. Wrong disease, wrong mechanism, and now we've triggered a bleeding diathesis in someone whose connective tissue was already falling apart.
+  [Supportive Care: Blood Transfusion] The transfusion raises hemoglobin to 9.2 g/dL and improves oxygen delivery; the patient's dyspnea eases slightly and skin color improves. House leans against the wall: 'We've bought him a few hours of better perfusion, but we're treating a symptom of thrombocytopenia while the real problem—whatever's shredding his platelets and wrecking his connective tissue architecture—keeps marching on.
+  [Supportive Care: Blood Transfusion] The transfusion raises hemoglobin to 9.2 g/dL and improves oxygen saturation to 94%, but the platelet count remains stubbornly low at 42K and the hepatosplenomegaly is unchanged on palpation. House leans against the doorframe: 'We've bought him a few hours of better perfusion, but we're treating the symptom of bleeding, not the reason his bone marrow is throwing a tantrum—or why his connective tissue is apparently held together with string.
+  [WILSON] All right, slow down. Margaret's sixty-six—has she always been able to touch her palms flat to the ground or bend like a pretzel, or is this new? And what's her family history like, particularly any relatives with joint problems, easy bruising, or who died young from something vascular? One more thing—any history of falls or trauma that seemed minor but caused major damage?
+  [WILSON_BRIEF] asked about lifelong flexibility, family connective tissue patterns, injury severity
+  [Supportive Care: IV Fluid Resuscitation] IV fluid resuscitation stabilizes the patient's blood pressure and improves capillary refill; urine output normalizes over the next two hours. House nods: 'Hypermobility, dislocations, hepatosplenomegaly, low platelets—we've got a connective tissue disaster on our hands, and you can't fix that by pouring saline into a vase with holes in the walls.
+  [Supportive Care: IV Fluid Resuscitation] IV fluids restore intravascular volume; blood pressure stabilizes and urine output improves over the next hour. House leans against the whiteboard: 'Hydration buys us time, but a patient with joint hypermobility, organ enlargement, and bleeding issues doesn't have a volume problem—they have a structural one, and we're still flying blind.
+  [Lab Test: Echocardiogram] The echocardiogram reveals mild mitral valve prolapse and normal ventricular function, with no signs of acute cardiac decompensation. House drums his fingers on the chart: "Connective tissue doesn't stay put—joints pop out, organs sag—but the heart's playing by the rules. We're looking at a systemic structural defect, not a cardiac one. This buys us cardiac clearance, but it doesn't explain why her connective tissue is falling apart.
+  [Lab Test: Bone Marrow Biopsy] Bone marrow biopsy shows normocellular marrow with normal myeloid and erythroid maturation; platelet production appears intact, suggesting the thrombocytopenia is peripheral rather than central. House leans back: 'Marrow's fine. So the low platelets aren't a production problem—they're being consumed or destroyed somewhere, which means we're still chasing ghosts in a connective tissue disease that doesn't care about your bone marrow.
+  [BRAINSTORM: Chase] Sir, I'm thinking we're looking at a primary connective tissue disorder with hepatic involvement—possibly Ehlers-Danlos with vascular complications. The hypermobility pattern, recurrent dislocations, and the splenomegaly suggest systemic collagen dysregulation affecting multiple organ systems. We should run a collagen cross-linking panel and get vascular imaging before this patient has a catastrophic bleed.
+  [BRAINSTORM_BRIEF: Chase] Suspects collagen dysregulation, recommends vascular imaging
+  [BRAINSTORM: Cameron] We're looking at something systemic that's attacking connective tissue itself—the hypermobility pattern is too coordinated, too progressive to be pure ligamentous laxity. The hepatosplenomegaly and low platelets suggest either infiltrative disease or a fundamental structural defect affecting multiple organ systems simultaneously. I think we need to stop chasing autoimmune and start asking what's wrong with how his body builds itself.
+  [BRAINSTORM_BRIEF: Cameron] connective tissue disorder, genetic basis likely
+  [BRAINSTORM: Foreman] Sir, we're looking at a connective tissue disorder with systemic involvement. The hypermobility and recurrent dislocations point to a heritable collagen defect, and the hepatosplenomegaly plus thrombocytopenia suggest this isn't just a skeletal problem—we're dealing with multi-organ pathology. I'd push for genetic testing and a rheumatology consult before you chase down some exotic infection.
+  [BRAINSTORM_BRIEF: Foreman] Heritable collagen disorder, systemic manifestations, genetic testing needed
+  [EUREKA — PATIENT PERSPECTIVE] Margaret Voss thinks: # Margaret's Experience
+
+I keep staring at the ceiling tiles, counting them again even though I've lost track three times already—anything to stop thinking about why I'm here. My shoulder throbs with that familiar, awful looseness, like something inside me isn't quite holding together the way it should, and the thought makes my chest tight with a fear I can't quite name. This room smells like bleach and something chemical underneath it, so clean it almost makes me feel dirtier somehow, like my own body is the contamination they're trying to protect against. I've been waiting for hours now, and nobody seems to know what comes next, and that not-knowing is almost worse than whatever brought me through those doors.
+  [EUREKA — HOUSE ENTERS] House: So your body decided to write its own instruction manual—unfortunately in crayon.
+  [EUREKA — ROUND 1/3] Patient: "What does that even mean, Doctor?" | House: "Your mother kept you in ballet until age sixteen—unusual commitment for a kid whose spine was basically origami. Never mind that, but I need you to think about whether your skin bruises if someone looks at it too hard."
+  [EUREKA — ROUND 2/3] Patient: "Yes, actually. I thought everyone did that." | House: "Your collagen—the structural glue holding your skin, joints, and connective tissue together—is defective at the molecular level. It's not just weak; it's malformed. Your body's making a substandard product, which is why your spine contorts like origami and your skin treats bruising like a contact sport."
+  [EUREKA — ROUND 3/3] Patient: "So I'm falling apart genetically?" | House: "You're not falling apart—you were built wrong from the start. Kyphoscoliotic Ehlers-Danlos Syndrome: COL6A1 or COL6A2 mutations mean your type VI collagen is structurally defective. That's why your spine twisted into a pretzel, your skin bruises if you breathe on it wrong, and your joints are about as stable as a house of cards in a hurricane."
+  [EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: Kyphoscoliotic Ehlers-Danlos Syndrome (kEDS, COL6A1/COL6A2 mutations)
+
+=== ACTION LOG ===
+  [Lab Test] Blood Panel | HP:-2 CLR:+16% MAL:+0% $-300
+  [Lab Test] ANA / Autoantibody Panel | HP:-1 CLR:+6% MAL:+0% $-500
+  [Lab Test] Comprehensive Metabolic Panel | HP:-1 CLR:+6% MAL:+0% $-400
+  [Lab Test] Genetic Panel | HP:+0 CLR:+18% MAL:+0% $-3000
+  [Lab Test] Skin / Tissue Biopsy | HP:-2 CLR:+18% MAL:+0% $-1800
+  [Treatment] Enzyme Replacement Therapy | HP:-22 CLR:+2% MAL:+19% $-4000
+  [Supportive Care] Blood Transfusion | HP:+3 CLR:+0% MAL:+0% $-800
+  [Supportive Care] Blood Transfusion | HP:+3 CLR:+0% MAL:+0% $-800
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] Echocardiogram | HP:+0 CLR:+8% MAL:+0% $-900
+  [Lab Test] Bone Marrow Biopsy | HP:-1 CLR:+6% MAL:+0% $-2200

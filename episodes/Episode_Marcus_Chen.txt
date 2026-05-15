@@ -1,0 +1,206 @@
+HOUSE M.D. — "Marcus Chen"
+============================================================
+
+# HOUSE M.D.
+
+## "THE STORAGE PROBLEM"
+
+**TEASER**
+
+INT. PRINCETON-PLAINSBORO TEACHING HOSPITAL — DIAGNOSTIC MEDICINE BULLPEN — DAY
+
+HOUSE sits at his desk, tossing a tennis ball against the wall. CAMERON and FOREMAN enter with a chart.
+
+CAMERON
+45-year-old male, Marcus Chen. Admitted with progressive leg weakness over six months. Can barely climb stairs.
+
+HOUSE
+(not looking up)
+Muscular dystrophy?
+
+FOREMAN
+Negative. And no signs of inflammatory disease.
+
+House catches the ball. His eyes narrow.
+
+HOUSE
+Blood work?
+
+CAMERON
+That's where it gets weird. Creatine kinase through the roof—3,840. Myoglobin elevated. But liver's angry too. ALT, AST both elevated.
+
+HOUSE
+(leaning back)
+Muscles are dissolving. Not the liver. The liver's just getting splatter damage.
+
+He stands abruptly, wincing slightly.
+
+HOUSE (CONT'D)
+Get him a nerve conduction study. And a muscle biopsy. We're looking for something that's breaking down from the inside.
+
+---
+
+**ACT ONE**
+
+INT. HOSPITAL ROOM — CONTINUOUS
+
+MARCUS CHEN, 45, sits on the edge of the hospital bed. His legs don't swing naturally—they move with visible effort. HOUSE enters, followed by the team.
+
+MARCUS
+(weak smile)
+Doc. Tell me you know what's wrong.
+
+HOUSE
+Not yet. But I know what's right—your nerves work fine. Your brain's sending signals just dandy. The problem's in the receiving end.
+
+MARCUS
+My legs.
+
+HOUSE
+Your muscles. They're storage units that forgot how to empty out the trash.
+
+House taps the chart against his palm.
+
+HOUSE (CONT'D)
+You quit your gym membership three years ago. Why?
+
+MARCUS
+(confused)
+How did you—
+
+HOUSE
+Because you didn't quit. Your legs did. Am I close?
+
+Marcus nods slowly, shame crossing his face.
+
+MARCUS
+I couldn't keep up anymore. Thought I was just getting old.
+
+HOUSE
+You're not old. You're broken. But not the way you think.
+
+---
+
+**ACT TWO**
+
+INT. HOSPITAL CONFERENCE ROOM — LATER
+
+CAMERON, FOREMAN, and HOUSE huddle around lab results.
+
+FOREMAN
+Biopsy came back. Glycogen accumulation in the muscle fibers. Massive amounts.
+
+CAMERON
+And the genetic panel flagged something in the secondary metabolic screen. Acid alpha-glucosidase deficiency.
+
+House closes his eyes. A moment of clarity.
+
+HOUSE
+Pompe Disease.
+
+FOREMAN
+Adult-onset glycogen storage disease type two. It's rare.
+
+HOUSE
+Not rare. Just missed. Because people like us keep looking for the dramatic—the autoimmune attack, the neurological breakdown. But sometimes the answer is simpler. Your body makes fuel it can't burn. The warehouse fills up. The muscles drown.
+
+CAMERON
+Is there treatment?
+
+HOUSE
+Enzyme replacement therapy. Alglucosidase alfa. We give him the enzyme his body forgot to make, and his muscles stop suffocating under their own leftovers.
+
+---
+
+**ACT THREE**
+
+INT. HOSPITAL ROOM — NIGHT
+
+MARCUS lies in bed. HOUSE enters alone, moving with his cane. He pulls a chair close.
+
+HOUSE
+We know what you have. Pompe Disease. Your muscles can't break down glycogen—the stored form of glucose. It's piling up inside the cells, making them weak, making them fail.
+
+MARCUS
+(voice shaking)
+Can you fix it?
+
+HOUSE
+No. But we can stop it. Enzyme replacement therapy. You'll get infusions regularly. Your muscles will start clearing out the backup. You might get some strength back. You definitely won't get worse as fast.
+
+MARCUS
+And without it?
+
+HOUSE
+Your heart's a muscle too. Eventually, it runs out of room.
+
+Marcus stares at the ceiling. Not acceptance. Understanding.
+
+MARCUS
+(whispered)
+I thought I was just weak.
+
+HOUSE
+You were. Now we know why. That's not nothing.
+
+---
+
+**WE ARE NOW THE PATIENT**
+
+INT. HOSPITAL ROOM — MARCUS'S PERSPECTIVE — CONTINUOUS
+
+*The room smells sharp and clean in a way that makes my nose sting, nothing like anywhere I've ever been before. I've been lying here for what feels like hours, staring at the ceiling tiles, wondering what happens next and whether things will ever feel normal again. The not knowing is almost worse than whatever this is—my mind keeps racing through possibilities while my body just sits here, weak and useless beneath these thin white sheets.*
+
+HOUSE (V.O.)
+(entering)
+So, your muscles have been throwing a tantrum because they can't digest their leftovers. Turns out, garbage disposal matters.
+
+MARCUS (V.O.)
+I don't understand what you're saying, Doctor.
+
+HOUSE (V.O.)
+Of course you don't—yet. But I
+
+============================================================
+[ Game log summary ]
+PATIENT: Marcus Chen
+OUTCOME: WIN — Diagnosis revealed: Pompe Disease (Adult-Onset Glycogen Storage Disease Type II)
+TURNS PLAYED: 14
+
+=== NARRATIVE LOG ===
+  [Lab Test: Blood Panel] The blood panel reveals markedly elevated creatine kinase at 3,840 U/L, myoglobin at 285 ng/mL, and persistent transaminitis with ALT 156 U/L and AST 142 U/L—a pattern screaming muscle breakdown rather than hepatic primary disease. House leans back: 'Skeletal and cardiac muscle are literally dissolving. We're looking at a systemic storage or metabolic myopathy, not some garden-variety liver problem, which means the stairs aren't the disease—they're just the symptom of whatever's rotting his muscles from the inside out.
+  [Lab Test: Comprehensive Metabolic Panel] The comprehensive metabolic panel returns: glucose 94 mg/dL, electrolytes normal, creatinine 0.9, but AST and ALT remain elevated at 3–4× upper limit of normal, with no acute kidney injury or hepatic synthetic dysfunction. House leans back and mutters, 'Liver's angry but not failing, kidneys are fine, blood sugar's boring—we're looking at muscle breakdown or storage, not infection, not cirrhosis, not diabetes. The real problem's in the cells themselves, and this panel just told us it's not screaming at us from the bloodstream.
+  [Lab Test: Urine Culture] Urine culture returns negative for bacterial growth after 48 hours; no UTI present. House leans back: 'So it's not an infection eating his muscles from the inside. We're looking at something the kidneys aren't involved in—probably a primary muscle or metabolic problem that's making him weak enough to barely climb stairs.
+  [Lab Test: Nerve Conduction Study] The nerve conduction study shows normal motor and sensory velocities with preserved amplitudes—the peripheral nerves are firing just fine. House leans back: 'So the wiring's intact. That means we're not looking at neuropathy or demyelination. The problem isn't in the cables; it's in the walls of the muscle cells themselves, and that's a much shorter list of culprits.
+  [Lab Test: Thyroid Panel] TSH and free T4 levels return normal, ruling out primary thyroid dysfunction as a cause of the progressive leg weakness and elevated transaminases. House frowns at the printout: 'Thyroid's fine, which means we're looking at something that's destroying muscle and liver tissue through a completely different mechanism—and a thyroid panel just bought us nothing but false confidence.
+  [Supportive Care: IV Fluid Resuscitation] IV fluid resuscitation stabilizes the patient's blood pressure and improves urine output, temporarily relieving the orthostatic dizziness he's been experiencing. House leans against the wall: 'Hydration buys us a few hours of comfort, but we're still watching a 45-year-old man lose motor function while his liver screams—this is a systemic storage problem, not dehydration, and padding his veins doesn't touch the real pathology.
+  [Supportive Care: IV Fluid Resuscitation] IV fluids restore the patient's blood pressure and urine output, and his immediate orthostatic dizziness resolves. House notes the resuscitation addresses dehydration but leaves the progressive proximal muscle weakness and hepatomegaly untouched—buying time for the real culprit to keep grinding away at his muscles and organs.
+  [Lab Test: ANA / Autoantibody Panel] The ANA panel comes back negative, and the rheumatologic workup yields no evidence of lupus, scleroderma, or other connective tissue disease. House drums his fingers on the chart: 'So it's not the immune system eating her muscles. That's helpful in the way a weather report is helpful when the house is on fire—we've ruled out one wrong answer, but her legs are still turning to jelly and her liver's still angry.
+  [Supportive Care: IV Fluid Resuscitation] IV fluids restore the patient's blood pressure and urine output, and he reports feeling less dizzy when sitting up—a minor win for his immediate comfort. House leans against the doorway: 'Hydration buys us time, sure, but it doesn't explain why his legs are turning to rubber or why his liver looks like a toxic waste dump. We're treating the symptom of dehydration, not the reason a 45-year-old can't climb stairs without his muscles screaming.
+  [Lab Test: Heavy Metal Screen] The heavy metal screen comes back negative across all panels—no lead, mercury, arsenic, or other toxins in the bloodstream. House leans back in his chair: 'So it's not poisoning. We've ruled out one of a thousand things that cause progressive muscle weakness and hepatic dysfunction, which leaves us exactly nowhere—the patient's legs are still failing, and we're running out of time before whatever's destroying his muscles decides his heart looks appetizing too.
+  [Lab Test: Skin / Tissue Biopsy] The skin biopsy shows abnormal accumulation of glycogen within muscle fibers and a notable deficiency of a critical lysosomal enzyme, findings consistent with a severe metabolic myopathy rather than inflammatory or neurological disease. House leans back: "So we're not dealing with an autoimmune attack or nerve damage—the patient's own cells are drowning in stored sugar they can't break down. That explains the progressive weakness, the liver involvement, and why nothing inflammatory is showing up. But knowing what's broken doesn't fix the machinery.
+  [Lab Test: Genetic Panel] The genetic panel returns: no pathogenic variants in common muscular dystrophy genes, but notably elevated acid alpha-glucosidase activity is flagged as abnormal in the secondary metabolic screen—a finding House finds curious, since it suggests the enzyme responsible for breaking down a specific cellular storage compound is either absent or severely deficient. House leans back: 'So the machinery for clearing out glycogen from muscle cells is either broken or on vacation. That explains the progressive weakness and the liver involvement—we're looking at a storage problem, not a structural one. The question is whether we caught it before the heart decides to join the party.
+  [Treatment: Enzyme Replacement Therapy] Within 48 hours of enzyme replacement therapy initiation, serum creatine kinase levels drop from 8,200 U/L to 2,100 U/L, and the patient reports mild improvement in stair-climbing ability and reduced morning stiffness in the legs. House nods: 'Lysosomal acid hydrolase deficiency finally has a substrate to chew on—we're clearing the glycogen traffic jam in the muscle fibers, not just managing symptoms.
+  [EUREKA — PATIENT PERSPECTIVE] Marcus Chen thinks: # Hospital Room
+
+I don't understand why my legs feel so heavy anymore, like they're not listening to what my brain is telling them to do. The room smells sharp and clean in a way that makes my nose sting, nothing like anywhere I've ever been before. I've been lying here for what feels like hours, staring at the ceiling tiles, wondering what happens next and whether things will ever feel normal again. The not knowing is almost worse than whatever this is—my mind keeps racing through possibilities while my body just sits here, weak and useless beneath these thin white sheets.
+  [EUREKA — HOUSE ENTERS] House: So, your muscles have been throwing a tantrum because they can't digest their leftovers. Turns out, garbage disposal matters.
+  [EUREKA — ROUND 1/3] Patient: "I... I don't understand what you're saying, Doctor." | House: "Of course you don't—yet. But I noticed your gym membership card expired three years ago, and you still pay the monthly fee. Most people quit because they got lazy or broke. You quit because your legs stopped working the way they used to, didn't they? You didn't understand that either until now."
+  [EUREKA — ROUND 2/3] Patient: "How did you know about my gym membership?" | House: "Your muscles are drowning in their own fuel. Glycogen—the storage form of glucose—is piling up inside your muscle cells because your body can't break it down. That enzyme, acid alpha-glucosidase, is missing or broken. Without it, your muscles are literally suffocating under the weight of what should be energy."
+  [EUREKA — ROUND 3/3] Patient: "Can you fix it? Is there treatment?" | House: "Pompe Disease—adult-onset glycogen storage disease type II. The single diagnostic clue that cracked this was your elevated creatine kinase combined with normal nerve conduction studies and a muscle biopsy showing vacuolar myopathy filled with glycogen. Your muscles are storage tanks with a broken pump. Yes, there's treatment: enzyme replacement therapy with alglucosidase alfa. It won't cure you, but it'll stop the clock."
+  [EUREKA — RESOLUTION] House limps out. Diagnosis confirmed: Pompe Disease (Adult-Onset Glycogen Storage Disease Type II)
+
+=== ACTION LOG ===
+  [Lab Test] Blood Panel | HP:-2 CLR:+16% MAL:+0% $-300
+  [Lab Test] Comprehensive Metabolic Panel | HP:-1 CLR:+8% MAL:+0% $-400
+  [Lab Test] Urine Culture | HP:-1 CLR:+6% MAL:+0% $-200
+  [Lab Test] Nerve Conduction Study | HP:-1 CLR:+16% MAL:+0% $-700
+  [Lab Test] Thyroid Panel | HP:-1 CLR:+6% MAL:+0% $-350
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] ANA / Autoantibody Panel | HP:-1 CLR:+6% MAL:+0% $-500
+  [Supportive Care] IV Fluid Resuscitation | HP:+3 CLR:+0% MAL:+0% $-150
+  [Lab Test] Heavy Metal Screen | HP:-1 CLR:+2% MAL:+0% $-600
+  [Lab Test] Skin / Tissue Biopsy | HP:-2 CLR:+18% MAL:+0% $-1800
+  [Lab Test] Genetic Panel | HP:+0 CLR:+18% MAL:+0% $-3000
+  [Treatment] Enzyme Replacement Therapy | HP:+9 CLR:+12% MAL:+0% $-4000
