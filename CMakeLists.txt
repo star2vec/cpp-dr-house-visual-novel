@@ -130,6 +130,18 @@ FetchContent_MakeAvailable(googletest)
 # 1. WE FIND OPENSSL FIRST
 find_package(OpenSSL REQUIRED)
 
+# cpp-httplib (bundled in include/external/httplib.h) requires Win10+ APIs (CreateFile2,
+# etc.). MSYS2 MinGW64 defaults _WIN32_WINNT to Win7, so we must raise it here.
+if(WIN32)
+    add_compile_definitions(_WIN32_WINNT=0x0A00)
+endif()
+# MinGW gcc 13 treats httplib's CertOpenSystemStoreW(NULL, ...) as a -Wconversion-null
+# error (NULL is a pointer, the param is an integer handle). We can't patch third-party
+# bundled code, so demote that one warning to non-fatal on MinGW.
+if(MINGW)
+    add_compile_options(-Wno-error=conversion-null)
+endif()
+
 
 ###############################################################################
 
