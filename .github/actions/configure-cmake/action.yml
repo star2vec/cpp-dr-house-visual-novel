@@ -40,35 +40,13 @@ runs:
         key: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.asan_name }}-ninja-cache-${{ hashFiles('CMakeLists.txt') }}
         restore-keys: ${{ matrix.os }}-${{ matrix.cxx }}-${{ matrix.asan_name }}-ninja-cache-
 
-    - name: Cache MinGW
-      uses: actions/cache@v4
-      id: cache-mingw
-      if: runner.os == 'Windows' && matrix.cxx == 'g++'
-      with:
-        path: gcc
-        key: ${{ runner.os }}-${{ env.MINGW_VER }}
-
-    - name: Download toolchain (MinGW)
-      uses: suisei-cn/actions-download-file@v1.6.0
-      id: download-mingw-gcc
-      if: runner.os == 'Windows' && matrix.cxx == 'g++' && steps.cache-mingw.outputs.cache-hit != 'true'
-      with:
-        url: "https://github.com/brechtsanders/winlibs_mingw/releases/download/${{ env.MINGW_VER }}"
-        target: compiler/
-
-    - name: Install toolchain (MinGW)
-      shell: bash
-      if: runner.os == 'Windows' && matrix.cxx == 'g++' && steps.cache-mingw.outputs.cache-hit != 'true'
-      run: |
-        7z x compiler/${{ steps.download-mingw-gcc.outputs.filename }} -ogcc
-
+    # MinGW path uses the MSYS2 MinGW64 toolchain installed in .github/actions/install-packages
+    # (gcc, cmake, ninja, openssl, pkgconf). shell: msys2 {0} runs inside that environment
+    # so find_package(OpenSSL) and the matching mingw gcc are all on PATH.
     - name: Configure CMake (MinGW)
-      shell: bash
+      shell: msys2 {0}
       if: runner.os == 'Windows' && matrix.cxx == 'g++'
       run: |
-        PATH="$(pwd)/gcc/mingw64/bin:${PATH}"
-        # because GH Actions does not properly prepend to $PATH and still chooses VM gcc
-        # CMake generator not passed as option to script since it might not be defined
         export CMAKE_GENERATOR=${{ matrix.cmake_generator }}
         bash ./scripts/cmake.sh configure \
           -b ${{ env.BUILD_DIR }} \

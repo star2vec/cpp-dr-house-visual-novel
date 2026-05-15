@@ -187,15 +187,34 @@ jobs:
           custom_flags: ${{ matrix.cmake_flags }}
           warnings_as_errors: 'ON'
 
-      - name: Build
+      - name: Build (MinGW)
+        if: runner.os == 'Windows' && matrix.cxx == 'g++'
+        shell: msys2 {0}
         run: |
           bash ./scripts/cmake.sh build -c ${{ env.BUILD_TYPE }}
 
-      - name: Test
-        # Run tests
+      - name: Build
+        if: ${{ !(runner.os == 'Windows' && matrix.cxx == 'g++') }}
+        run: |
+          bash ./scripts/cmake.sh build -c ${{ env.BUILD_TYPE }}
+
+      - name: Test (MinGW)
+        if: runner.os == 'Windows' && matrix.cxx == 'g++'
+        shell: msys2 {0}
         run: cd "${BUILD_DIR}" && ctest
 
+      - name: Test
+        if: ${{ !(runner.os == 'Windows' && matrix.cxx == 'g++') }}
+        run: cd "${BUILD_DIR}" && ctest
+
+      - name: Install (MinGW)
+        if: runner.os == 'Windows' && matrix.cxx == 'g++'
+        shell: msys2 {0}
+        run: |
+          bash ./scripts/cmake.sh install -c ${{ env.BUILD_TYPE }} -i artifacts
+
       - name: Install
+        if: ${{ !(runner.os == 'Windows' && matrix.cxx == 'g++') }}
         # Use CMake to "install" build artifacts (only interested in CMake registered targets) to our custom artifacts directory
         run: |
           bash ./scripts/cmake.sh install -c ${{ env.BUILD_TYPE }} -i artifacts
