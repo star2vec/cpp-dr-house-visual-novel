@@ -8,19 +8,19 @@ Patient::Patient()
       hiddenDiagnosis("Unknown"), diseaseSeverity(1) {}
 
 // Constructor supraincarcat (3 params — backward-compatible)
-Patient::Patient(std::string n, int h, std::string symptom)
+Patient::Patient(const std::string& n, int h, const std::string& symptom)
     : name(n), health(h),
       diagnosticCurent(new std::string(symptom)),
       diagnosticClarity(0), malpracticeRisk(0),
       hiddenDiagnosis("Unknown"), diseaseSeverity(1) {}
 
 // Constructor complet (cu hiddenDiagnosis si severity)
-Patient::Patient(std::string n, int h, std::string symptom,
-                 std::string hiddenDiag, int severity)
+Patient::Patient(const std::string& n, int h, const std::string& symptom,
+                 const std::string& hiddenDiag, int severity)
     : name(n), health(h),
       diagnosticCurent(new std::string(symptom)),
       diagnosticClarity(0), malpracticeRisk(0),
-      hiddenDiagnosis(std::move(hiddenDiag)),
+      hiddenDiagnosis(hiddenDiag),
       diseaseSeverity(severity) {}
 
 // --- REGULA CELOR 3 ---
@@ -92,7 +92,7 @@ std::istream& operator>>(std::istream& is, Patient& p) {
 
 // Getteri
 int Patient::getHealth() const { return health; }
-std::string Patient::getName() const { return name; }
+const std::string& Patient::getName() const { return name; }
 std::string Patient::getSymptom() const { return *diagnosticCurent; }
 int Patient::getClarity() const { return diagnosticClarity; }
 int Patient::getMalpractice() const { return malpracticeRisk; }

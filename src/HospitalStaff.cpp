@@ -2,16 +2,17 @@
 #include <iostream>
 
 // Constructor clasa de baza
-HospitalStaff::HospitalStaff(std::string n) : name(n) {}
+HospitalStaff::HospitalStaff(const std::string& n) : name(n) {}
 
 // Destructor virtual - OBLIGATORIU pentru a evita memory leak-uri la upcast
 HospitalStaff::~HospitalStaff() {}
 
 // Doctor apeleaza constructorul din HospitalStaff
-Doctor::Doctor(std::string n, std::string spec) : HospitalStaff(n), specialty(spec) {}
+Doctor::Doctor(const std::string& n, const std::string& spec) : HospitalStaff(n), specialty(spec) {}
 
 // Administrator (Cuddy)
 Administrator::Administrator() : HospitalStaff("Lisa Cuddy") {}
+// cppcheck-suppress unusedFunction
 void Administrator::interact() {
     std::cout << "\n[CUDDY]: House, my office. NOW. I've seen the bill for that MRI.\n";
 }
@@ -24,7 +25,7 @@ void drHouse::interact() {
 }
 
 // TeamMember (Chase/Foreman/Cameron) - apeleaza constructorul din Doctor
-TeamMember::TeamMember(std::string n, std::string spec) : Doctor(n, spec) {}
+TeamMember::TeamMember(const std::string& n, const std::string& spec) : Doctor(n, spec) {}
 void TeamMember::interact() {
     std::cout << "\n[" << name << " - " << specialty << "]: We should probably check for Sarcoidosis or Lupus.\n";
 }

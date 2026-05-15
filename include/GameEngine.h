@@ -31,7 +31,7 @@ private:
 
 public:
     // Acum primește un pacient din exterior!
-    GameEngine(Patient p);
+    explicit GameEngine(const Patient& p);
     void run();
 };
 

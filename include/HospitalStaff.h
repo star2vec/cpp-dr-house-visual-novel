@@ -8,7 +8,7 @@ class HospitalStaff {
 protected:
     std::string name;
 public:
-    HospitalStaff(std::string n);
+    explicit HospitalStaff(const std::string& n);
     virtual ~HospitalStaff();
     virtual void interact() = 0;
 };
@@ -17,7 +17,7 @@ class Doctor : public HospitalStaff {
 protected:
     std::string specialty;
 public:
-    Doctor(std::string n, std::string spec);
+    Doctor(const std::string& n, const std::string& spec);
 };
 
 class Administrator : public HospitalStaff {
@@ -37,7 +37,7 @@ public:
 
 class TeamMember : public Doctor {
 public:
-    TeamMember(std::string n, std::string spec);
+    TeamMember(const std::string& n, const std::string& spec);
     void interact() override;
 };
 

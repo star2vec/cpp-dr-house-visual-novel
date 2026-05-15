@@ -20,9 +20,9 @@ private:
 
 public:
     Patient();
-    Patient(std::string n, int h, std::string symptom);
-    Patient(std::string n, int h, std::string symptom,
-            std::string hiddenDiag, int severity);
+    Patient(const std::string& n, int h, const std::string& symptom);
+    Patient(const std::string& n, int h, const std::string& symptom,
+            const std::string& hiddenDiag, int severity);
 
     // --- REGULA CELOR 3 ---
     ~Patient();
@@ -31,7 +31,7 @@ public:
 
     // Getteri
     int getHealth() const;
-    std::string getName() const;
+    const std::string& getName() const;
     std::string getSymptom() const;
     int getClarity() const;
     int getMalpractice() const;

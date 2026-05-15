@@ -186,6 +186,12 @@ endif()
 #
 #include(GoogleTest)
 #gtest_discover_tests(test_oop)
-copy_files(FILES tastatura.txt secrets.json COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+# secrets.json holds the Anthropic API key — gitignored, so only present locally.
+# Skip copying when absent (e.g. on CI runners) so the build doesn't fail.
+if(EXISTS ${CMAKE_SOURCE_DIR}/secrets.json)
+    copy_files(FILES tastatura.txt secrets.json COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+else()
+    copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
+endif()
 # copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})

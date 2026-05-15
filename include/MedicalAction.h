@@ -4,7 +4,7 @@
 #include <string>
 
 // --- CLASA DE BAZA ABSTRACTA ---
-// Nu vei putea crea niciodata un obiect simplu "MedicalAction", 
+// Nu vei putea crea niciodata un obiect simplu "MedicalAction",
 // trebuie sa fie neaparat un Test, Tratament, etc.
 class MedicalAction {
 protected:
@@ -14,12 +14,12 @@ protected:
     inline static int totalActionsPerformed = 0;
 
 public:
-    MedicalAction(std::string n) : name(n) {}
+    explicit MedicalAction(const std::string& n) : name(n) {}
     virtual ~MedicalAction() = default;
 
     virtual std::string getActionType() const = 0;
 
-    std::string getName() const { return name; }
+    const std::string& getName() const { return name; }
 
     void recordPerformed() { ++totalActionsPerformed; }
 
@@ -33,28 +33,29 @@ public:
 // 1. Analize (Cresc Claritatea, risc mic)
 class LabTest : public MedicalAction {
 public:
-    LabTest(std::string n) : MedicalAction(n) {}
-    
+    explicit LabTest(const std::string& n) : MedicalAction(n) {}
+
     // Suprascriem functia pura
-    std::string getActionType() const override { 
-        return "Lab Test"; 
+    // cppcheck-suppress unusedFunction
+    std::string getActionType() const override {
+        return "Lab Test";
     }
 };
 
 // 2. Tratament (Modifica masiv Health, risc mediu)
 class Treatment : public MedicalAction {
 public:
-    Treatment(std::string n) : MedicalAction(n) {}
-    
-    std::string getActionType() const override { 
-        return "Treatment"; 
+    explicit Treatment(const std::string& n) : MedicalAction(n) {}
+
+    std::string getActionType() const override {
+        return "Treatment";
     }
 };
 
 // 3. Proceduri Riscante (Risc imens de Malpraxis, dar pot salva viata)
 class RiskyProcedure : public MedicalAction {
 public:
-    RiskyProcedure(std::string n) : MedicalAction(n) {}
+    explicit RiskyProcedure(const std::string& n) : MedicalAction(n) {}
 
     std::string getActionType() const override {
         return "Risky Procedure";
@@ -64,7 +65,7 @@ public:
 // 4. Ingrijire Suportiva (Stabilizare simptomatica — nu vindeca, nu dauneaza)
 class SupportiveCare : public MedicalAction {
 public:
-    SupportiveCare(std::string n) : MedicalAction(std::move(n)) {}
+    explicit SupportiveCare(const std::string& n) : MedicalAction(n) {}
 
     std::string getActionType() const override {
         return "Supportive Care";

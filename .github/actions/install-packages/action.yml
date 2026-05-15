@@ -36,3 +36,25 @@ runs:
       run: |
         # sudo apt-get update
         sudo apt-get install --no-install-recommends valgrind
+
+    # MinGW on Windows ships without OpenSSL; install via MSYS2 so find_package(OpenSSL) works.
+    - name: Install OpenSSL (Windows MinGW)
+      if: runner.os == 'Windows' && matrix.cxx == 'g++'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: false
+        install: mingw-w64-x86_64-openssl mingw-w64-x86_64-pkgconf
+
+    - name: Expose MSYS2 OpenSSL to CMake
+      shell: bash
+      if: runner.os == 'Windows' && matrix.cxx == 'g++'
+      run: |
+        # setup-msys2 exports MSYS2_LOCATION; mingw64 prefix lives at $MSYS2_LOCATION/mingw64.
+        # Persist OPENSSL_ROOT_DIR + PATH so subsequent steps (configure-cmake, build) see it.
+        OPENSSL_PREFIX="${MSYS2_LOCATION}/mingw64"
+        echo "OPENSSL_ROOT_DIR=${OPENSSL_PREFIX}" >> "${GITHUB_ENV}"
+        echo "OPENSSL_INCLUDE_DIR=${OPENSSL_PREFIX}/include" >> "${GITHUB_ENV}"
+        echo "OPENSSL_CRYPTO_LIBRARY=${OPENSSL_PREFIX}/lib/libcrypto.dll.a" >> "${GITHUB_ENV}"
+        echo "OPENSSL_SSL_LIBRARY=${OPENSSL_PREFIX}/lib/libssl.dll.a" >> "${GITHUB_ENV}"
+        echo "${OPENSSL_PREFIX}/bin" >> "${GITHUB_PATH}"

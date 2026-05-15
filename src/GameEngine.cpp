@@ -13,7 +13,7 @@
 #include <sstream>
 #include <thread>
 
-GameEngine::GameEngine(Patient p) : patient(p) {}
+GameEngine::GameEngine(const Patient& p) : patient(p) {}
 
 void GameEngine::checkEndings() {
     if (patient.getHealth() <= 0)        throw PatientDeathException(turn);
@@ -655,12 +655,12 @@ void GameEngine::renderCaseBoard(bool expanded) {
             size_t nameEnd = entry.find(']');
             if (nameEnd != std::string::npos && nameEnd + 2 < entry.size()) {
                 std::string name  = entry.substr(18, nameEnd - 18);
-                std::string brief = entry.substr(nameEnd + 2);
+                std::string briefText = entry.substr(nameEnd + 2);
                 bool found = false;
                 for (auto& kv : agentBriefs) {
-                    if (kv.first == name) { kv.second = brief; found = true; break; }
+                    if (kv.first == name) { kv.second = briefText; found = true; break; }
                 }
-                if (!found) agentBriefs.push_back({name, brief});
+                if (!found) agentBriefs.push_back({name, briefText});
             }
         } else if (sw(entry, "[CLUE] ")) {
             clues.push_back(entry.substr(7));

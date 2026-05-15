@@ -55,6 +55,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const GameLog<U>& log);
 
     // STL algorithm + lambda (rubric)
+    // cppcheck-suppress unusedFunction
     std::vector<T> filter(std::function<bool(const T&)> predicate) const {
         std::vector<T> result;
         std::copy_if(entries.begin(), entries.end(),
@@ -71,6 +72,7 @@ public:
     size_t size() const { return entries.size(); }
 
     // Non-trivial static method (rubric)
+    // cppcheck-suppress unusedFunction
     static int getInstanceCount() { return instanceCount; }
 };
 
