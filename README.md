@@ -1,4 +1,4 @@
-[Episode_Paul_Garza.txt](https://github.com/user-attachments/files/27902886/Episode_Paul_Garza.txt)# Dr. House: The Visual Novel
+# Dr. House: The Visual Novel
 
 A C++ terminal game where you play Dr. Gregory House trying to diagnose a patient before they die, you end up at Mayfield Psychiatric, or you bankrupt Princeton-Plainsboro Teaching Hospital. You order tests, argue with the team, lie to Cuddy for money, and occasionally pop a Vicodin.
 
@@ -71,14 +71,8 @@ There are four critical stats. Lose control of them, and it's Game Over.
 
 ### The Core Mechanics
 
-<table>
-  <tr>
-    <td align="center">
-      <img width="601" height="437" alt="Screenshot 2026-05-17 at 17 45 23" src="https://github.com/user-attachments/assets/53586d09-159c-4800-a11e-b3e58a461afd" />
-      <br>
-    </td>
-  </tr> 
-</table>
+<img width="400" alt="Screenshot 2026-05-17 at 17 45 23" src="https://github.com/user-attachments/assets/53586d09-159c-4800-a11e-b3e58a461afd" />
+
 
 * **Medical Intervention:** Order from a list of Lab Tests, Treatments, or Risky Procedures. The LLM evaluates your choice against the hidden canonical diagnosis to award Clarity or penalize you.
 
@@ -144,6 +138,12 @@ There are four critical stats. Lose control of them, and it's Game Over.
 
 
 * **The Whiteboard (Free-Text):** Type your own medical theories into a prompt. The AI acts as House's internal monologue to guide you. **Hidden Easter Egg:** If your text input contains a substring of the actual hidden disease, you trigger a "Eureka" spark and gain a massive +5% Clarity bonus!
+
+<p align="center">
+  <img width="400" alt="Screenshot 2026-05-17 at 18 41 01" src="https://github.com/user-attachments/assets/e7a48677-78c9-4c0a-aba4-e2998c2f8bf2" />
+</p>
+
+
 * **The Eureka Finale:** Once you hit 100% Clarity, the POV shifts to the patient for a 3-round conversational boss fight where House delivers the final diagnosis.
 
 
@@ -154,15 +154,12 @@ https://github.com/user-attachments/assets/49739ade-fb95-44c9-a2b8-6e7545da6034
 Win or lose, the game serializes every action you took and offers two distinct AI-generated wrap-ups:
 1. **Foreman's Post-Mortem:** The LLM reviews your exact `ActionRecord` log, reviews your medical errors, and explains the optimal clinical path you *should* have taken. Saved to `Notes_<PatientName>.txt`.
 
-<table>
-  <tr>
-    <td align="center">
-      <img width="819" height="565" alt="Screenshot 2026-05-17 at 18 08 05" src="https://github.com/user-attachments/assets/c19dc451-3989-4f8a-97f4-8743e5efe92d" />
-      <br>
-    </td>
-  </tr> 
-</table>
+<p align="center">
+  <img width="700" alt="Screenshot 2026-05-17 at 18 08 05" src="https://github.com/user-attachments/assets/c19dc451-3989-4f8a-97f4-8743e5efe92d" />
+</p>
 
 2. **Director's Cut:** The AI takes your entire playthrough log and writes a 2-page dramatic TV script. Saved to `Episode_<PatientName>.txt`.
+
+[Episode_Paul_Garza.txt](https://github.com/user-attachments/files/27902886/Episode_Paul_Garza.txt)
 
 ## Have fun!! :D
