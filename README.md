@@ -1,6 +1,6 @@
 # Dr. House: The Visual Novel
 
-A C++ terminal game where you play Dr. Gregory House trying to diagnose a patient before they die, get you fired, or bankrupt the hospital. You order tests, argue with the team, lie to Cuddy for money, and occasionally pop a Vicodin.
+A C++ terminal game where you play Dr. Gregory House trying to diagnose a patient before they die, you end up at Mayfield Psychiatric, or you bankrupt Princeton-Plainsboro Teaching Hospital. You order tests, argue with the team, lie to Cuddy for money, and occasionally pop a Vicodin.
 
 > You are Gregory House. A patient is bleeding from somewhere they shouldn't be bleeding from. You have ~8000 hospital dollars, four hostile colleagues, a Vicodin bottle, and roughly fifteen turns before something kills them. Run labs. Order treatments. Break into their apartment. Don't take the fifth pill.
 
