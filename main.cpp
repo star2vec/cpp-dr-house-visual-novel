@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
         // to the corresponding HospitalStaff* and dispatch through the virtual say().
         const MorningScript& script = pickRandomMorningScript();
         for (const auto& sl : script) {
-            HospitalStaff* speaker = nullptr;
+            const HospitalStaff* speaker = nullptr;
             switch (sl.who) {
                 case Speaker::Cuddy:   speaker = cuddy.get();   break;
                 case Speaker::Wilson:  speaker = wilson.get();  break;
@@ -153,8 +153,8 @@ int main(int argc, char* argv[]) {
         }
 
         // Downcast: surface House's morning stats as a quiet closing beat.
-        for (auto* s : staff) {
-            if (auto* h = dynamic_cast<drHouse*>(s)) {
+        for (const auto* s : staff) {
+            if (const auto* h = dynamic_cast<const drHouse*>(s)) {
                 std::cout << "\033[2m(Vicodin: " << h->getVicodin()
                           << "  |  Sarcasm: " << h->getSarcasm() << "/100)\033[0m\n";
             }

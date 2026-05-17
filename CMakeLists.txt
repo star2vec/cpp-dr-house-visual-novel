@@ -157,6 +157,13 @@ if(APPLE)
     target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE "-framework CoreFoundation" "-framework Security")
 endif()
 
+# httplib.h uses Winsock2 (socket, send, recv, WSAPoll, ...) and Crypt32 (CertOpenSystemStoreW,
+# CertGetCertificateChain, ...) on Windows. MinGW's default link line ships kernel32/user32/etc.
+# but NOT ws2_32 or crypt32, so the link fails with "undefined reference to __imp_socket" etc.
+if(WIN32)
+    target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE ws2_32 crypt32)
+endif()
+
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
 # NOTE: RUN_SANITIZERS is optional, if it's not present it will default to true
 set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})# set_compiler_flags(TARGET_NAMES ${MAIN_EXECUTABLE_NAME} ${FOO} ${BAR})
