@@ -71,7 +71,7 @@ There are four critical stats. Lose control of them, and it's Game Over.
 
 ### The Core Mechanics
 
-<img width="400" alt="Screenshot 2026-05-17 at 17 45 23" src="https://github.com/user-attachments/assets/53586d09-159c-4800-a11e-b3e58a461afd" />
+<img width="600" alt="Screenshot 2026-05-17 at 17 45 23" src="https://github.com/user-attachments/assets/53586d09-159c-4800-a11e-b3e58a461afd" />
 
 
 * **Medical Intervention:** Order from a list of Lab Tests, Treatments, or Risky Procedures. The LLM evaluates your choice against the hidden canonical diagnosis to award Clarity or penalize you.
