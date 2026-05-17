@@ -40,7 +40,8 @@ class MayfieldWardException : public GameException {
 public:
     explicit MayfieldWardException(int turn)
         : GameException("Turn " + std::to_string(turn) +
-          ": House checks himself into Mayfield Psychiatric Hospital. Vicodin wins.") {}
+          ": Fifth pill of the day. Cuddy finds you slumped against the locker. "
+          "Mayfield Psychiatric — your own private General Hospital.") {}
 };
 
 #endif

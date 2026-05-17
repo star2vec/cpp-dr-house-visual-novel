@@ -52,8 +52,15 @@ int main() {
 #include "TerminalUI.h"
 #include "LLM.h"
 #include "Exceptions.h"
+#include "HospitalStaff.h"
+#include "MorningScripts.h"
+#include <chrono>
+#include <future>
 #include <iostream>
+#include <memory>
 #include <string>
+#include <thread>
+#include <vector>
 
 int main(int argc, char* argv[]) {
     if (argc >= 2 && std::string(argv[1]) == "--test") {
@@ -102,10 +109,63 @@ int main(int argc, char* argv[]) {
     std::cout << "=======================================\n";
     std::cout << "   DR. HOUSE : THE VISUAL NOVEL        \n";
     std::cout << "=======================================\n\n";
-    std::cout << "Cameron is preparing patient files... (Please wait)\n";
+    std::cout << "Cameron is preparing the patient files... (please wait)\n";
+    std::cout << "\033[2mMeanwhile, somewhere on the fourth floor:\033[0m\n";
 
-    // 1. Generam cei 3 pacienti
-    std::vector<PatientProfile> profiles = aiBrain.generatePatientFiles(3);
+    // Kick off patient-file generation on a background thread so the morning montage
+    // covers the LLM latency. Same parallel-fanout pattern we use in the team brainstorm.
+    auto profilesFuture = std::async(std::launch::async, [&aiBrain]() {
+        return aiBrain.generatePatientFiles(3);
+    });
+
+    // 0. Morning at Princeton-Plainsboro — polymorphic dispatch on the HospitalStaff
+    //    hierarchy. Each derived staff type defines its own say(line); the scene
+    //    script below is an ordered list of (speaker, line) pairs, so the
+    //    conversation interleaves naturally instead of one character monologuing.
+    //    Upcast: base pointers stored in `staff` and dispatched via virtual say().
+    //    Downcast: dynamic_cast<drHouse*> after the loop surfaces House's morning stats.
+    {
+        std::cout << "\n=== PRINCETON-PLAINSBORO TEACHING HOSPITAL  -  9:47 a.m. ===\n";
+        std::cout << "House limps off the elevator. The morning happens to him.\n\n";
+
+        auto cuddy   = std::make_unique<Administrator>();
+        auto wilson  = std::make_unique<Wilson>();
+        auto foreman = std::make_unique<TeamMember>("Eric Foreman", "Neurology");
+        auto house   = std::make_unique<drHouse>();
+
+        // Base-pointer collection — exercises upcast for the rubric and lets the
+        // downcast block below iterate without picking each pointer by name.
+        std::vector<HospitalStaff*> staff = { cuddy.get(), wilson.get(), foreman.get(), house.get() };
+
+        // Pick one of 12 themed morning scripts at random; resolve Speaker enum
+        // to the corresponding HospitalStaff* and dispatch through the virtual say().
+        const MorningScript& script = pickRandomMorningScript();
+        for (const auto& sl : script) {
+            HospitalStaff* speaker = nullptr;
+            switch (sl.who) {
+                case Speaker::Cuddy:   speaker = cuddy.get();   break;
+                case Speaker::Wilson:  speaker = wilson.get();  break;
+                case Speaker::Foreman: speaker = foreman.get(); break;
+                case Speaker::House:   speaker = house.get();   break;
+            }
+            speaker->say(sl.line);                               // virtual dispatch
+            std::this_thread::sleep_for(std::chrono::milliseconds(800));
+        }
+
+        // Downcast: surface House's morning stats as a quiet closing beat.
+        for (auto* s : staff) {
+            if (auto* h = dynamic_cast<drHouse*>(s)) {
+                std::cout << "\033[2m(Vicodin: " << h->getVicodin()
+                          << "  |  Sarcasm: " << h->getSarcasm() << "/100)\033[0m\n";
+            }
+        }
+
+        std::cout << "\n(Press ENTER to read what Cameron just dropped on your desk...)";
+        while (TerminalUI::getKeyPress() != 3);
+    }
+
+    // 1. Await patient files — returns instantly if the LLM finished during the montage.
+    std::vector<PatientProfile> profiles = profilesFuture.get();
 
     // 2. Meniul tip CARUSEL
     int selected = 0;

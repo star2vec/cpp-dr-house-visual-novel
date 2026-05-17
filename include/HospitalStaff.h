@@ -10,7 +10,11 @@ protected:
 public:
     explicit HospitalStaff(const std::string& n);
     virtual ~HospitalStaff();
-    virtual void interact() = 0;
+
+    // Pure virtual: each derived staff type renders a line of dialogue in its own voice
+    // (colored prefix + typewriter on the body). The scene script in main.cpp drives
+    // the order of calls — this is just the per-character rendering hook.
+    virtual void say(const std::string& line) const = 0;
 };
 
 class Doctor : public HospitalStaff {
@@ -23,7 +27,7 @@ public:
 class Administrator : public HospitalStaff {
 public:
     Administrator();
-    void interact() override;
+    void say(const std::string& line) const override;
 };
 
 class drHouse : public Doctor {
@@ -32,19 +36,21 @@ private:
     int vicodinPills;
 public:
     drHouse();
-    void interact() override;
+    void say(const std::string& line) const override;
+    int getSarcasm() const { return sarcasmLevel; }
+    int getVicodin() const { return vicodinPills; }
 };
 
 class TeamMember : public Doctor {
 public:
     TeamMember(const std::string& n, const std::string& spec);
-    void interact() override;
+    void say(const std::string& line) const override;
 };
 
 class Wilson : public Doctor {
 public:
     Wilson();
-    void interact() override;
+    void say(const std::string& line) const override;
 };
 
 #endif

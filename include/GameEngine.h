@@ -11,10 +11,20 @@ class GameEngine {
 private:
     Patient patient;
     LLM aiBrain;
-    int budget = 15000;
+    int budget = 8000;
     int vicodinLevel = 0;
     int turn = 1;
     int cuddyFundsGranted = 0;
+
+    int  wilsonUsesLeft    = 3;      // -1 once payback scene has fired
+    bool brokeInOnce       = false;
+    bool skippedClinicOnce = false;
+    bool prankedOnce       = false;
+    bool monsterTrucksOnce = false;
+    bool cuddyDeniedNext   = false;  // set by Skip Clinic, consumed in the Cuddy branch
+    bool eurekaPending     = false;  // clarity hit 100 but health < 10 — waiting for stabilization
+    bool lastChoiceNoOp    = false;  // set by a sub-menu when it refuses to consume the turn
+
     GameLog<std::string>     narrativeLog;
     GameLog<ActionRecord>    actionLog;
 
@@ -28,6 +38,8 @@ private:
 
     void runEurekaFinale();
     void triggerDirectorsCut(const std::string& outcome);
+    void runForemanPostMortem(const std::string& outcome);
+    void showPostGameMenu(const std::string& outcome);
 
 public:
     // Acum primește un pacient din exterior!

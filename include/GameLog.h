@@ -11,6 +11,7 @@ struct ActionRecord {
     std::string actionName;
     std::string actionType;
     std::string brief;       // short case-board summary, e.g. "elevated WBC, bilateral infiltrates"
+    std::string gloss;       // layperson translation of `brief`; empty if none was produced.
     int healthDelta     = 0;
     int clarityDelta    = 0;
     int malpracticeDelta = 0;
