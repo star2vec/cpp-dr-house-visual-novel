@@ -63,11 +63,15 @@ runs:
         # fi
 
     - name: Copy stdlib (MinGW)
-      shell: bash
+      # MinGW is now provided by msys2/setup-msys2 in install-packages, which puts
+      # the toolchain under /mingw64/ inside the MSYS2 environment — NOT at gcc/mingw64/
+      # like the old winlibs download did. Run this step inside the MSYS2 shell so
+      # /mingw64/bin/ is on PATH and `which` can locate the runtime DLLs by name.
+      shell: msys2 {0}
       if: runner.os == 'Windows' && matrix.cxx == 'g++'
       # static linking might not work with MinGW, might be easier this way
       run: |
-        cp gcc/mingw64/bin/libstdc++-6.dll \
-          gcc/mingw64/bin/libgcc_s_seh-1.dll \
-          gcc/mingw64/bin/libwinpthread-1.dll \
-          ${GITHUB_WORKSPACE}/${{ env.ZIP_NAME }}
+        cp "$(which libstdc++-6.dll)" \
+           "$(which libgcc_s_seh-1.dll)" \
+           "$(which libwinpthread-1.dll)" \
+           "${GITHUB_WORKSPACE}/${{ env.ZIP_NAME }}"
